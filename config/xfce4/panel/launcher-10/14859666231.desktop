@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Enable soft WiFI AP
+Comment=
+Exec=/home/tapioca/tapioca/hostapd.sh
+Icon=network-wireless
+Path=/home/tapioca/tapioca/
+Terminal=true
+StartupNotify=true

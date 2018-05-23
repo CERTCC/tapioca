@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Capture raw network traffic
+Comment=(Capture all traffic without HTTP/HTTPS interception)
+Exec=/home/tapioca/tapioca/tcpdump.py
+Icon=application-wireshark-doc
+Path=/home/tapioca/tapioca/
+Terminal=false
+StartupNotify=false

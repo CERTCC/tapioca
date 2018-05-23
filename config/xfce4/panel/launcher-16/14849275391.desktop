@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Wireshark Network Analyzer
+Comment=Wireshark traffic and network analyzer
+TryExec=wireshark
+Exec=wireshark %f
+Icon=wireshark
+Terminal=false
+Type=Application
+Categories=X-Red-Hat-Extra;Network;GTK;X-Fedora;
+MimeType=application/x-pcap;
+X-Desktop-File-Install-Version=0.22
+X-XFCE-Source=file:///usr/share/applications/wireshark.desktop

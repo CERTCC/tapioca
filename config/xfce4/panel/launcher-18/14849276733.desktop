@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Capture with full MITM inspection
+Comment=(Inspect all traffic w/ installed CA cert)
+Exec=/home/tapioca/tapioca/proxy.py
+Icon=system-search
+Path=/home/tapioca/tapioca/
+Terminal=false
+StartupNotify=false

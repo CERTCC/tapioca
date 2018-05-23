@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Network traffic capture
+Comment=Launcher for individual network captures
+Exec=/home/tapioca/tapioca/tapioca.py
+Icon=network-cellular-connected
+Path=/home/tapioca/tapioca/
+Terminal=false
+StartupNotify=false

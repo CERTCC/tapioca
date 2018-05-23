@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=wireshark %f
+Name=wireshark
+Comment=Custom definition for wireshark
+Icon=wireshark

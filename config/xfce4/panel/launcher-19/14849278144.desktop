@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Stop network capture
+Comment=(allow traffic to pass through)
+Exec=/home/tapioca/tapioca/noproxy.py
+Icon=process-stop
+Path=/home/tapioca/tapioca/
+Terminal=true
+StartupNotify=false

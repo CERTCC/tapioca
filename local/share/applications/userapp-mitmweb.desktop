@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=xfce4-terminal --disable-server -T "mitmweb" -e "mitmweb.sh --showhost --no-server --rfile %f"
+Name=mitmweb
+Comment=Custom definition for mitmweb
+Terminal=true
+Icon=chromium-browser

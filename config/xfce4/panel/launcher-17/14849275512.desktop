@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Capture with invalid SSL root CA
+Comment=(Check for apps that don't validate SSL)
+Exec=/home/tapioca/tapioca/ssltest.py
+Icon=changes-prevent
+Path=/home/tapioca/tapioca/
+Terminal=false
+StartupNotify=false

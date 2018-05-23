@@ -1,0 +1,12 @@
+[Added Associations]
+x-scheme-handler/http=exo-web-browser.desktop
+x-scheme-handler/https=exo-web-browser.desktop
+application/mitmproxy=userapp-mitmweb.desktop;userapp-mitmproxy.desktop;
+application/mitmproxy-ssl=userapp-mitmweb.desktop;userapp-mitmproxy.desktop;
+application/vnd.tcpdump.pcap=userapp-wireshark.desktop;
+
+[Default Applications]
+application/mitmproxy=userapp-mitmproxy.desktop
+application/mitmproxy-ssl=userapp-mitmproxy.desktop
+application/vnd.tcpdump.pcap=userapp-wireshark.desktop
+text/plain=mousepad.desktop

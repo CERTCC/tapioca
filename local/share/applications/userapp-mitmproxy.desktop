@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=xfce4-terminal --disable-server -T "mitmproxy" -e "mitmproxy --showhost --no-server --rfile %f"
+Name=mitmproxy
+Comment=Custom definition for mitmproxy
+Terminal=true
+Icon=utilities-terminal

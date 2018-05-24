@@ -63,13 +63,15 @@ If for any reason the installation fails, check and correct any relevant errors 
 1. Click the Tapioca GUI button to launch the main testing interface.
 
 ### Testing Apps on Wireless Devices Using Access point
-1. Configure Tapioca machine LAN adapter to be `10.0.0.1/24`
+1. Configure the Tapioca machine second network adapter to be `10.0.0.1/24`
+1. If this network was not already configured at install time, re-run `./install_tapioca.sh` or manually edit `tapioca.cfg` to specify this network device name for `internal_net`.
 1. Connect the access point uplink port to the Tapioca LAN port.
 2. Connect your device to the access point.
 1. Click the Tapioca GUI button to launch the main testing interface.
 
 ### Testing Apps on Virtual Machines
-1. Configure Tapioca machine LAN adapter to be `10.0.0.1/24`
+1. Configure the Tapioca machine second second network adapter to be `10.0.0.1/24`
+1. If this network was not already configured at install time, re-run `./install_tapioca.sh` or manually edit `tapioca.cfg` to specify this network device name for `internal_net`.
 1. Click the Tapioca GUI button to launch the main testing interface.
 
 # Tapioca Desktop Layout

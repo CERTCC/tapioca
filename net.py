@@ -448,7 +448,7 @@ def get_dtls_info(pkt):
                 negotiateddtlsciphers, negotiated_ciphersuite, dtlshost)
             if args.verbose:
                 print('Negotiated ciphersuite with %s: %s' %
-                      (dtlshostt, color.bright(negotiated_ciphersuite)))
+                      (dtlshost, color.bright(negotiated_ciphersuite)))
                 print('***********')
 
     except AttributeError:

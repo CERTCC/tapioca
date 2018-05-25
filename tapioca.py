@@ -827,16 +827,6 @@ class Window(QtGui.QWidget):
             #print('Adding app %s' % appname)
             self.cboapp.addItem(appname)
 
-    @QtCore.pyqtSlot(str)
-    def cleartestresult(self, test):
-        #print('Clearing test result for %s')
-        if testname == 'tcpdump':
-            self.lbltcpdump.setText('')
-        elif testname == 'ssltest':
-            self.lblssltest.setText('')
-        elif testname == 'full':
-            self.lblfull.setText('')
-
     @QtCore.pyqtSlot()
     def disabletests(self):
         #print('Disabling test buttons')

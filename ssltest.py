@@ -52,9 +52,13 @@ def main():
     testapp(appname, standalone=True)
 
 
-def testapp(appname, standalone=False):
+def testapp(appname, rewrite=False, standalone=False):
     outdir = './logs'
     overwrite = False
+    if rewrite:
+        rewrite = '1'
+    else:
+        rewrite = ''
 
     appname = re.sub(r'\W+', '', appname).lower()
     with open('.lastapp', 'w+') as lastfile:
@@ -69,7 +73,7 @@ def testapp(appname, standalone=False):
             if not overwrite:
                 sys.exit()
 
-    subprocess.call(['./ssltest.sh', outdir])
+    subprocess.call(['./ssltest.sh', outdir, rewrite])
 
 if __name__ == "__main__":
     main()

@@ -34,6 +34,7 @@ echo Internal network: $internal_net
 
 testmode=$1
 outputdir="$2"
+rewrite=$3
 
 mkdir -p $outputdir
 
@@ -53,13 +54,21 @@ if [ "$testmode" == "ssltest" ]; then
     sleep 0.2
     xterm -geometry -100-100 -e "tail -F $outputdir/ssltest.log | strings | grep \"5:https,\"" &
     sudo ./iptables_mitmproxy.sh
-    mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/ssltest.log
+    if [ -z "$rewrite" ]; then
+        mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/ssltest.log
+    else
+        mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/ssltest.log -s rewrite.py
+    fi
     ./uris.py $outputdir/ssltest.log
 elif [ "$testmode" == "full" ]; then
     # Test full HTTPS inspection (certificate installed)
     rm -f logs/flows.log 
     sudo ./iptables_mitmproxy.sh
-    mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log    
+    if [ -z "$rewrite" ]; then
+        mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log
+    else
+	mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log -s rewrite.py
+    fi
 elif [ "$testmode" == "tcpdump" ]; then
     # Just capture raw traffic without interfering
     rm -f logs/tcpdump.pcap

@@ -113,6 +113,8 @@ class Example(QtCore.QObject):
         self.gui.btnsearch.clicked.connect(self.search)
 
         self.gui.chksearch.stateChanged.connect(self.multitoggle)
+        self.gui.chkrewrite.stateChanged.connect(self.rewritetoggle)
+        self.gui.btnrewrite.clicked.connect(self.editrewrite)
 
         self.worker.signalStatus.connect(self.gui.updateStatus)
         self.worker.signalStatus.connect(self.updateStatus)
@@ -379,6 +381,22 @@ class Example(QtCore.QObject):
             self.worker.searchmulti = False
 
     @QtCore.pyqtSlot()
+    def editrewrite(self):
+        subprocess.call(['exo-open rewrite.py'], shell=True)
+
+    @QtCore.pyqtSlot()
+    def rewritetoggle(self):
+        if self.gui.chkrewrite.checkState():
+            # print('Checked!')
+            self.worker.rewrite = True
+            self.gui.btnrewrite.setEnabled(True)
+        else:
+            # print('Not checked')
+            self.worker.rewrite = False
+            self.gui.btnrewrite.setEnabled(False)
+
+
+    @QtCore.pyqtSlot()
     def allreports(self):
         test = 'report'
         self.workersignal.emit(test)
@@ -467,6 +485,7 @@ class WorkerObject(QtCore.QObject):
         self.foundunenc = False
         self.foundunprot = False
         self.foundprot = False
+        self.rewrite = False
 
     @QtCore.pyqtSlot(str)
     def receivework(self, message):
@@ -474,11 +493,11 @@ class WorkerObject(QtCore.QObject):
             #print('** running %s for %s' % (message, self.appname))
             tcpdump.testapp(self.appname)
         elif message == 'ssltest':
-            #print('** running %s for %s' % (test, self.appname))
-            ssltest.testapp(self.appname)
+            #print('** running %s for %s' % (message, self.appname))
+            ssltest.testapp(self.appname, rewrite=self.rewrite)
         elif message == 'full':
-            #print('** running %s for %s' % (test, self.appname))
-            proxy.testapp(self.appname)
+            #print('** running %s for %s' % (message, self.appname))
+            proxy.testapp(self.appname, rewrite=self.rewrite)
         elif message == 'report':
             #print('** running %s for %s' % (message, self.appname))
             subprocess.call(
@@ -660,6 +679,13 @@ class Window(QtGui.QWidget):
         self.btntcpdump.setToolTip(
             'Launch tcpdump to capture all traffic without interception')
         self.lbltcpdump = QtGui.QLabel()
+        self.chkrewrite = QtGui.QCheckBox('Modify mitmproxy traffic')
+        self.chkrewrite.setToolTip(
+            'Edit mitmproxy rules for traffic modification.\nOnly affects "Verify SSL Validation" and "Full HTTPS inspection" tests')
+        self.btnrewrite = QtGui.QPushButton('Edit modification rules')
+        self.btnrewrite.setToolTip(
+            'Modify mitmproxy traffic rewriting rules')
+        self.btnrewrite.setEnabled(False)
         self.btnssl = QtGui.QPushButton('Capture - Verify SSL validation')
         self.btnssl.setToolTip(
             'Launch mitmproxy to capture HTTP(S) traffic with an invalid certificate')
@@ -705,6 +731,7 @@ class Window(QtGui.QWidget):
         layout.addRow(self.btntcpdump, self.lbltcpdump)
         layout.addRow(self.btnssl, self.lblssltest)
         layout.addRow(self.btnfull, self.lblfull)
+        layout.addRow(self.chkrewrite, self.btnrewrite)
         layout.addRow(self.btnstop)
         layout.addRow(self.spacer)
         layout.addRow(self.spacer)

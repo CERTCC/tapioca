@@ -29,4 +29,4 @@
 
 rm -rf ~/.mitmproxy
 cp -a .mitmproxy ~
-xfce4-terminal --disable-server -T "mitmproxy" -e "./restartcap.sh full $1"
+xfce4-terminal --disable-server -T "mitmproxy" -e "./restartcap.sh full $1 $2"

@@ -38,7 +38,7 @@ arch=`uname -m`
 
 if [ -f /etc/os-release ]; then
     source /etc/os-release
-fi 
+fi
 
 if [ "$user_id" != "tapioca" ] && [ "$user_id" != "root" ]; then
     if [ -z "$apt" ]; then
@@ -58,7 +58,7 @@ For example:
 # adduser tapioca
 # usermod -aG $sudogroup tapioca
 EOF
-    fi    
+    fi
     exit 1
 fi
 
@@ -154,13 +154,13 @@ if [ -z "$path_set" ]; then
     cat ~/.bash_profile >> .bash_profile.tmp
     cp .bash_profile.tmp ~/.bash_profile
 fi
- 
+
 if [ ! -z "$dnf" ]; then
     # dnf is present. So probably Fedora
     sudo dnf -y group install "Fedora Workstation"
     sudo dnf -y group install xfce "Development tools" "Development Libraries"
     sudo dnf -y install perl-Pod-Html gcc-c++ redhat-rpm-config python3-devel
-fi 
+fi
 
 if [ ! -z "$yum" ] && [ -z "$dnf" ]; then
     #EL7 and not Fedora
@@ -168,7 +168,7 @@ if [ ! -z "$yum" ] && [ -z "$dnf" ]; then
     sudo yum -y install epel-release
     sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Development Libraries"
 fi
- 
+
 if [ ! -z "$zypper" ] && [ ! -z "$apt" ]; then
     # zypper and apt are present.  So probably OpenSUSE Tumbleweed
     # zypper is present.  So probably OpenSUSE Tumbleweed
@@ -239,7 +239,7 @@ fi
 if [ ! -z "$apt" ]; then
     # set the default terminal emulator
     sudo update-alternatives --set x-terminal-emulator /usr/bin/xfce4-terminal.wrapper
-    
+
     # Newer ubuntu versions have different package names between releases.
     # Don't error out on these if they're not present
     sudo apt -y install gnome-icon-theme-full
@@ -317,10 +317,10 @@ fi
 if [ -z "$miniconda_python" ]; then
     # No miniconda (e.g. Raspberry Pi), so standard Python install
     python36=`which python3.6 2> /dev/null`
- 
+
     if [ -z "$python36" ]; then
         mkdir -p ~/in
-        pushd ~/in 
+        pushd ~/in
         rm -f Python-3.6.1.tgz
         rm -rf Python-3.6.1
         wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz
@@ -332,31 +332,31 @@ if [ -z "$miniconda_python" ]; then
           exit 1
         fi
         popd; popd
-    fi  
-  
+    fi
+
 else
     # miniconda python install
     # Check if the PATH var is already set in .bash_profile
     touch ~/.bash_profile
     path_set=`egrep "^PATH=" ~/.bash_profile | grep $HOME/miniconda/bin`
-    
-    
+
+
     if [ -z "$path_set" ]; then
         # Put miniconda path at beginning
         sed -i.bak -e "s@^PATH=@PATH=$HOME/miniconda/bin/:@" ~/.bash_profile
     fi
-    
+
     sbin_path_set=`grep PATH= ~/.bash_profile | grep /sbin`
 
     if [ -z "$sbin_path_set" ]; then
         # Put the sbin paths into the PATH env variable.
         sed -i.bak -e "s@^PATH=@PATH=/sbin:/usr/sbin:@" ~/.bash_profile
-    fi    
-    
-    
+    fi
+
+
     # Check if the PATH var is already set in .profile
     profile_exists=`grep PATH= ~/.profile`
-    
+
     if [ ! -z "$profile_exists" ]; then
         path_set=`grep PATH=$HOME/miniconda/bin ~/.profile`
         if [ -z "$path_set" ]; then
@@ -365,18 +365,18 @@ else
             cat ~/.profile.orig >> ~/.profile
         fi
     fi
-    
+
     export PATH="$HOME/miniconda/bin:$PATH"
 
     python36=`which python3.6 2> /dev/null`
-    
+
     if [ -z "$python36" ]; then
         # Python 3.6 binary is there, but not in path
         export PATH="$HOME/miniconda/bin:$PATH"
         python36=`which python3.6 2> /dev/null`
     fi
-    
-    
+
+
     if [ -z "$python36" ]; then
         echo "python 3.6 not found in path. Please check miniconda installation."
         exit 1
@@ -395,7 +395,7 @@ fi
 # Build Wireshark if /usr/local/bin/tshark isn't there
 if [ ! -f /usr/local/bin/tshark ]; then
     mkdir -p ~/in
-    pushd ~/in 
+    pushd ~/in
     rm -f wireshark-2.6.0.tar.xz
     rm -rf wireshark-2.6.0
     wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.0.tar.xz
@@ -446,7 +446,7 @@ else
     sudo $mypip install colorama mitmproxy pyshark GitPython
 fi
 
-# Enable services on boot 
+# Enable services on boot
 if [ ! -z "$zypper" ]; then
     sudo systemctl set-default graphical.target
     sudo chkconfig NetworkManager on
@@ -461,7 +461,7 @@ elif [ ! -z "$yum" ]; then
 elif [ ! -z "$apt" ]; then
     sudo update-rc.d dnsmasq enable
     sudo update-rc.d isc-dhcp-server enable
-fi 
+fi
 
 # Save default iptables rule if both network devices detected
 if [ "$internal_net" != "LAN_DEVICE" ] && [ "$external_net" !=  "WAN_DEVICE" ] ; then
@@ -472,26 +472,26 @@ if [ "$internal_net" != "LAN_DEVICE" ] && [ "$external_net" !=  "WAN_DEVICE" ] ;
     sudo iptables-save
 else
     # Set up basic iptables default deny for incoming traffic
-    
+
     # Flush existing rules
     sudo iptables -F
-    
+
     # Set default chain policies
     sudo iptables -P INPUT DROP
     sudo iptables -P FORWARD DROP
     sudo iptables -P OUTPUT ACCEPT
-    
+
     # Accept on localhost
     sudo iptables -A INPUT -i lo -j ACCEPT
     sudo iptables -A OUTPUT -o lo -j ACCEPT
-    
+
     # Allow established sessions to receive traffic
     sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
     sudo iptables-save
     sudo service iptables save
 fi
 
-# Copy over preconfigured xfce 
+# Copy over preconfigured xfce
 if [ -d ~/.config ]; then
     if [ -d ~/.config/xfce4 ]; then
         mv ~/.config/xfce4 ~/.config/xfce4.orig
@@ -530,13 +530,13 @@ sudo cp mitmweb.sh /usr/local/bin/
 # Start x / xfce on login
 if [ -f ~/.xinitrc ]; then
     cp ~/.xinitrc ~/.xinitrc.orig
-fi 
+fi
 echo "sudo service dnsmasq restart" > ~/.xinitrc
 echo "exec /usr/bin/xfce4-session" >> ~/.xinitrc
 
 startx=`grep startx ~/.bash_profile`
 if [ -z "$startx" ]; then
-    echo startx >> ~/.bash_profile    
+    echo startx >> ~/.bash_profile
 fi
 
 
@@ -546,7 +546,7 @@ if [ ! -z "$apt" ]; then
     sudo cp etc/network/interfaces /etc/network/interfaces
     sudo sed -i.bak -e 's@#DAEMON_CONF=""@DAEMON_CONF="/etc/hostapd/hostapd.conf"@' /etc/default/hostapd
     sudo mv /etc/dnsmasq.d/network-manager /etc/dnsmasq.d/network-manager.orig 2>/dev/null
-    
+
     if [ -e "/etc/netplan/01-netcfg.yaml" ]; then
         # Ubuntu 17.10 uses networkd instead of NetworkManager.  We need the latter.
         sudo mv /etc/netplan/01-netcfg.yaml /etc/netplan/01-network-manager-all.yaml
@@ -554,7 +554,7 @@ if [ ! -z "$apt" ]; then
         sudo netplan apply
         sudo service network-manager restart
     fi
-    
+
     if [ -e "/etc/netplan/50-cloud-init.yaml" ]; then
         # Ubuntu 18.04 uses networkd instead of NetworkManager.  We need the latter.
         sudo mv /etc/netplan/50-cloud-init.yaml /etc/netplan/01-network-manager-all.yaml
@@ -565,7 +565,7 @@ if [ ! -z "$apt" ]; then
         sudo netplan apply
         sudo service network-manager restart
     fi
-    
+
     if [ -e "/etc/systemd/resolved.conf" ]; then
         # Ubuntu 18.04 uses systemd-resolve instead of dnsmasq.
         # We need to enable udp-listening resolver.
@@ -574,7 +574,7 @@ if [ ! -z "$apt" ]; then
             sudo bash -c "echo 'DNSStubListener=udp' >> /etc/systemd/resolved.conf"
         fi
     fi
-    
+
 fi
 
 if [ ! -z "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then

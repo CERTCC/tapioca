@@ -517,6 +517,14 @@ popd
 
 mkdir -p ~/tapioca/results
 
+mkdir -p ~/.config/Mousepad
+touch ~/.config/Mousepad/mousepadrc
+mousepad_wordwrap=`grep "ViewWordWrap=true" ~/.config/Mousepad/mousepadrc`
+if [ -z "$mousepad_wordwrap" ]; then
+    # Wrap mousepad long lines by default
+    echo ViewWordWrap=true >> ~/.config/Mousepad/mousepadrc
+fi
+
 sudo cp mitmweb.sh /usr/local/bin/
 
 # Start x / xfce on login

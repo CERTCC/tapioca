@@ -55,23 +55,22 @@ if [ "$testmode" == "ssltest" ]; then
     xterm -geometry -100-100 -e "tail -F $outputdir/ssltest.log | strings | grep \"5:https,\"" &
     sudo ./iptables_mitmproxy.sh
     if [ -z "$rewrite" ]; then
-        mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/ssltest.log
+        mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/ssltest.log
     else
-        mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/ssltest.log -s rewrite.py
+        mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/ssltest.log -s rewrite.py
     fi
     ./uris.py $outputdir/ssltest.log
 elif [ "$testmode" == "full" ]; then
     # Test full HTTPS inspection (certificate installed)
-    rm -f logs/flows.log 
+    rm -f logs/flows.log
     sudo ./iptables_mitmproxy.sh
     if [ -z "$rewrite" ]; then
-        mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log
+        mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log
     else
-	mitmproxy --showhost --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log -s rewrite.py
+	mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log -s rewrite.py
     fi
 elif [ "$testmode" == "tcpdump" ]; then
     # Just capture raw traffic without interfering
     rm -f logs/tcpdump.pcap
     xfce4-terminal --disable-server -T "tcpdump" -e "sudo tcpdump -U -i $internal_net -w $outputdir/tcpdump.pcap -v"
 fi
-

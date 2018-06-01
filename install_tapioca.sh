@@ -524,6 +524,7 @@ if [ -z "$mousepad_wordwrap" ]; then
     # Wrap mousepad long lines by default
     echo ViewWordWrap=true >> ~/.config/Mousepad/mousepadrc
 fi
+gsettings set org.xfce.mousepad.preferences.view word-wrap true
 
 sudo cp mitmweb.sh /usr/local/bin/
 

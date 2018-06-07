@@ -58,6 +58,18 @@ if [ ! -z "$unset_pass" ]; then
   mousepad hostapd.conf
 fi
 
+source ./tapioca.cfg
+
+unset_pass=`grep PASSWORD_HERE hostapd.conf`
+unset_LAN=`grep LAN_DEVICE tapioca.cfg`
+ssid=`grep ssid= hostapd.conf | awk -F= '{print $NF}'`
+
+if [ ! -z "$unset_pass" ]; then
+  echo "*** You must set the wireless password in hostapd.conf ***"
+  sleep 5
+  exit 1
+fi
+
 network_up=`nmcli device status | grep " connected " | head -n1`
 
 if [ -z "$network_up" ]; then

@@ -40,6 +40,12 @@ if [ -f /etc/os-release ]; then
     source /etc/os-release
 fi
 
+if [ -z $(which sudo) ]; then
+    echo "sudo command not found"
+    echo "Please ensure that sudo is installed before running this installer."
+    exit 1
+fi
+
 if [ "$user_id" != "tapioca" ] && [ "$user_id" != "root" ]; then
     if [ -z "$apt" ]; then
         # Redhat adduser doesn't prompt to set password

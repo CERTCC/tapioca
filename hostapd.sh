@@ -58,18 +58,6 @@ if [ ! -z "$unset_pass" ]; then
   mousepad hostapd.conf
 fi
 
-source ./tapioca.cfg
-
-unset_pass=`grep PASSWORD_HERE hostapd.conf`
-unset_LAN=`grep LAN_DEVICE tapioca.cfg`
-ssid=`grep ssid= hostapd.conf | awk -F= '{print $NF}'`
-
-if [ ! -z "$unset_pass" ]; then
-  echo "*** You must set the wireless password in hostapd.conf ***"
-  sleep 5
-  exit 1
-fi
-
 network_up=`nmcli device status | grep " connected " | head -n1`
 
 if [ -z "$network_up" ]; then
@@ -103,44 +91,44 @@ if [ -z "$free_wifi" ]; then
 else
     wifi_adapter=`echo $free_wifi | awk '{print $1}'`
     wifi_state=`echo $free_wifi | awk '{print $3}'`
-    
+
     if [ "$nmclimajor" -gt 0 ]; then
         # Old nmcli doesn't support checking wifi properties it seems
         ap_supported=`nmcli -f WIFI-PROPERTIES dev show $wifi_adapter | grep WIFI-PROPERTIES.AP | awk '{print $NF}'`
-        
+
         if [ "$ap_supported" == "no" ]; then
             echo "*** Wireless device $wifi_adapter is available, but it does not appear to support AP mode. ***"
             sleep 10
             exit 1
-        fi 
+        fi
     fi
-    
+
     if [ "$wifi_state" == "disconnected" ]; then
         echo "Wireless device $wifi_adapter is available, but it is managed by NetworkManager."
         echo "Reconfiguring $wifi_adapter to be unmanaged..."
-         
+
         ap_mac=`$ethtool_bin -P $wifi_adapter | awk '{print $NF}'`
         keyfile_present=`grep '\[keyfile\]' /etc/NetworkManager/NetworkManager.conf`
-        if [ -z "$keyfile_present" ]; then      
+        if [ -z "$keyfile_present" ]; then
             sudo sh -c "echo '[keyfile]' >> /etc/NetworkManager/NetworkManager.conf"
         fi
         sudo sh -c "echo unmanaged-devices=mac:$ap_mac >> /etc/NetworkManager/NetworkManager.conf"
-        
+
         sudo systemctl restart NetworkManager.service
-        
+
         sleep 10
-        
+
         free_wifi=`nmcli device status | grep " wifi " | grep -v " connected " | head -n1`
         wifi_state=`echo $free_wifi | awk '{print $3}'`
-        
+
         if [ "$wifi_state" == "disconnected" ]; then
             echo "*** Please reboot to activate network changes. ***"
             sleep 10
             exit 1
         fi
-        
+
     fi
-    
+
 fi
 
 echo "Detected internal wireless AP adapter: $wifi_adapter"
@@ -206,4 +194,3 @@ if [ $? -eq 0 ]; then
     echo "*** WiFi SSID $ssid should now be available! ***"
 fi
 sleep 8
-

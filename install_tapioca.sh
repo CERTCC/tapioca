@@ -218,7 +218,7 @@ elif [ ! -z "$apt" ]; then
     python3-pyqt4 python-colorama python3-colorama python3-pip \
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
-    libsnappy-dev libgcrypt-dev
+    libsnappy-dev libgcrypt-dev ifupdown
 fi
 
 if [ $? -ne 0 ]; then

@@ -30,7 +30,7 @@
 user_id=`whoami`
 yum=`which yum 2>/dev/null`
 dnf=`which dnf 2>/dev/null`
-apt=`which apt 2>/dev/null`
+apt=`which apt-get 2>/dev/null`
 zypper=`which zypper 2>/dev/null`
 sudogroup=`egrep "^wheel:|^sudo:" /etc/group | awk -F: '{print $1}'`
 tapiocasudo=`egrep "^$sudogroup" /etc/group | grep tapioca`
@@ -176,7 +176,7 @@ if [ ! -z "$yum" ] && [ -z "$dnf" ]; then
 fi
 
 if [ ! -z "$zypper" ] && [ ! -z "$apt" ]; then
-    # zypper and apt are present.  So probably OpenSUSE Tumbleweed
+    # zypper and apt-get are present.  So probably OpenSUSE Tumbleweed
     # zypper is present.  So probably OpenSUSE Tumbleweed
     sudo zypper -n install patterns-devel-base-devel_basis patterns-xfce-xfce_basis \
      man libxml2-devel libxml2 libxslt libxslt-devel python3-devel libopenssl-devel dnsmasq tcpdump \
@@ -208,9 +208,9 @@ elif [ ! -z "$yum" ]; then
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel
 elif [ ! -z "$apt" ]; then
-    #apt is present.  So probably Ubuntu
-    sudo apt -y update
-    DEBIAN_FRONTEND=noninteractive sudo -E apt -y install xfce4 xfce4-goodies build-essential libxml2-dev \
+    #apt-get is present.  So probably Ubuntu
+    sudo apt-get -y update
+    DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install xfce4 xfce4-goodies build-essential libxml2-dev \
     libxslt1-dev python-dev libssl-dev dnsmasq tcpdump isc-dhcp-server \
     chromium-browser telnet nano xdotool tmux iptables iw nmap xterm \
     libglib2.0-dev libqt4-dev libc-ares-dev libsmi2-dev \
@@ -248,17 +248,17 @@ if [ ! -z "$apt" ]; then
 
     # Newer ubuntu versions have different package names between releases.
     # Don't error out on these if they're not present
-    sudo apt -y install gnome-icon-theme-full
-    sudo apt -y install libgnutls-dev
-    sudo apt -y install libgnutls28-dev
-    sudo apt -y install python-wxgtk2.8
-    sudo apt -y install python-wxgtk3.0
-    sudo apt -y install libffi-dev
-    sudo apt -y install network-manager-gnome
-    sudo apt -y install net-tools
-    sudo apt -y install qttools5-dev-tools
-    sudo apt -y install qttools5-dev
-    sudo apt -y install libnghttp2-dev
+    sudo apt-get -y install gnome-icon-theme-full
+    sudo apt-get -y install libgnutls-dev
+    sudo apt-get -y install libgnutls28-dev
+    sudo apt-get -y install python-wxgtk2.8
+    sudo apt-get -y install python-wxgtk3.0
+    sudo apt-get -y install libffi-dev
+    sudo apt-get -y install network-manager-gnome
+    sudo apt-get -y install net-tools
+    sudo apt-get -y install qttools5-dev-tools
+    sudo apt-get -y install qttools5-dev
+    sudo apt-get -y install libnghttp2-dev
 fi
 
 if [ -f /etc/sysconfig/dhcpd ]; then
@@ -283,8 +283,8 @@ fi
 
 if [ "$ID" = "raspbian" ]; then
     # Switch to using NetworkManager (Raspberry Pi)
-    sudo apt -y install network-manager-gnome
-    sudo apt -y purge openresolv dhcpcd5
+    sudo apt-get -y install network-manager-gnome
+    sudo apt-get -y purge openresolv dhcpcd5
     sudo ln -sf /lib/systemd/resolv.conf /etc/resolv.conf
 fi
 
@@ -395,7 +395,7 @@ fi
 qt5=`dpkg -l qt5-qmake 2>/dev/null`
 if [ ! -z "$qt5" ] && [ ! -z "$apt" ]; then
     # We need qttools5-dev-tools to compile wireshark
-    sudo apt -y install qttools5-dev-tools
+    sudo apt-get -y install qttools5-dev-tools
 fi
 
 # Build Wireshark if /usr/local/bin/tshark isn't there

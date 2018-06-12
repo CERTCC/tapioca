@@ -31,6 +31,11 @@
 #
 # END LICENSE #
 
+# See https://github.com/mitmproxy/mitmproxy/tree/master/examples for more
+# examples as to what you can do with mitmproxy scripts
+# This file can be edited while mitmproxy is running. It will pick up changes
+# on file save
+
 from mitmproxy import http
 
 req_before = 'Content to find in intercepted requests'
@@ -38,8 +43,21 @@ req_after = 'Content to replace the above with'
 resp_before = 'Content to find in intercepted responses'
 resp_after = 'Content to replace the above with'
 
+#calcbytes = None
+#with open("calc.exe", "rb") as f:
+#    calcbytes = f.read()
+
 def response(flow: http.HTTPFlow) -> None:
     flow.response.replace(resp_before, resp_after)
 
 def request(flow: http.HTTPFlow) -> None:
     flow.request.replace(req_before, req_after)
+
+## Below is an example that will answer any question for a URI that ends in '.exe'
+## with the bytes from calc.exe (uncomment the above as well)
+#    if flow.request.method == 'GET' and flow.request.url.endswith('.exe'):
+#        flow.response = http.HTTPResponse.make(
+#            200,  # (optional) status code
+#            calcbytes,  # (optional) content
+#            {'Content-Type': 'application/octet-stream'}  # (optional) headers
+#        )

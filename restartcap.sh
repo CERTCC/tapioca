@@ -36,6 +36,10 @@ testmode=$1
 outputdir="$2"
 rewrite=$3
 
+if [ -z "$outputdir" ]; then
+    outputdir=.
+fi
+
 mkdir -p $outputdir
 
 export LANG=en_US.UTF-8

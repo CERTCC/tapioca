@@ -77,7 +77,6 @@ if [ "$detected_external" != "$external_net" ]; then
   echo "*** tapioca.cfg doesn't seem to be configured properly! ***"
   echo "*** $detected_external is detected as external, but $external_net is configured in tapioca.cfg ***"
   sleep 10
-  exit 1
 fi
 
 if [ "$detected_internal" != "$internal_net" ]; then
@@ -86,7 +85,6 @@ if [ "$detected_internal" != "$internal_net" ]; then
   echo "*** tapioca.cfg doesn't seem to be configured properly! ***"
   echo "*** $detected_internal is detected as internal, but $internal_net is configured in tapioca.cfg ***"
   sleep 10
-  exit 1
 fi
 
 if [ -z "$external_net" ]; then

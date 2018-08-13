@@ -47,7 +47,7 @@ fi
 
 detected_external=`netstat -rn | egrep "^0.0.0.0" | awk '{print $NF}' | head -n1`
 detected_external_ip=`netstat -rn | egrep "^0.0.0.0" | awk '{print $2}' | head -n1`
-detected_external_subnet=`echo $detected_external_ip | awk -F. '{print $1 "." $2}'`
+detected_external_subnet=`echo $detected_external_ip | awk -F. '{print $1 "." $2 "." $3}'`
 detected_internal=`netstat -rn | egrep "^$internal" | awk '{print $NF}' | head -n1`
 
 

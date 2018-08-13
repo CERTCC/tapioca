@@ -9,9 +9,9 @@
 * [Tapioca Desktop Layout](#tapioca-desktop-layout)
 * [Tapioca GUI Usage](#tapioca-gui-usage)
 * [Tapioca Capture Modes](#tapioca-capture-modes)
-   * [All traffic with tcpdump](#all-traffic-with-tcpdump)
-   * [Verify SSL validation](#verify-ssl-validation)
-   * [Full HTTPS inspection](#full-https-inspection)
+   * [All traffic with tcpdump](#all-traffic-with-tcpdump-mode)
+   * [Verify SSL validation](#verify-ssl-validation-mode)
+   * [Full HTTPS inspection](#full-https-inspection-mode)
 * [Strategies for Using Tapioca](#strategies-for-using-tapioca)
 * [Manual Execution of Scripts](#manual-execution-of-scripts)
 
@@ -114,21 +114,21 @@ While the Tapioca platform provides buttons to launch individual tests, the Tapi
 # Tapioca Capture Modes
 To be able to run all of the reports included with Tapioca, **three** captures are required.:
 
-### All traffic with tcpdump
+### All traffic with tcpdump mode
 ![tcpdump](images/tapioca-tcpdump.png?raw=true)
 
 In "**All traffic with tcpdump**" mode, Tapioca doesn't interfere with HTTPS negotiation. This allows Tapioca to inspect the HTTPS handshakes that occur between a client and a server.  If a client is using insecure crypto, or protocols other than HTTP/HTTPS, then the tcpdump capture will be required to detect this. This capture is required to allow the **Crypto test** report to be generated.
 
-### Verify SSL validation
+### Verify SSL validation mode
 ![SSL validation](images/tapioca-ssltest.png?raw=true)
 
 In "**Verify SSL validation**" mode, Tapioca will intercept web traffic, and the HTTPS communications between the client and Tapioca will use an **invalid** root CA certificate. Any client that allows HTTPS traffic through Tapioca without warning is vulnerable to malicious interception. Despite the client using HTTPS, it is not receiving the benefits that HTTPS aims to provide. This capture is required to allow the SSL test report to be generated.
 
 
-### Full HTTPS inspection
+### Full HTTPS inspection mode
 ![Full HTTPS inspection](images/tapioca-full.png?raw=true)
 
-In "**Full HTTPS inspection**" mode, Tapioca will intercept web traffic, and the HTTPS communications between the client and Tapioca will use a valid root CA certificate that has been installed on the client. This allows searching for content in web traffic, even if it has been encrypted with HTTPS. This capture is required to allow Search capabilities within encrypted, but not pinned, network traffic.
+In "**Full HTTPS inspection**" mode, Tapioca will intercept web traffic, and the HTTPS communications between the client and Tapioca will use a valid root CA certificate that has been [installed on the client](https://docs.mitmproxy.org/stable/concepts-certificates/). This allows searching for content in web traffic, even if it has been encrypted with HTTPS. This capture is required to allow Search capabilities within encrypted, but not pinned, network traffic.
 
 # Strategies for Using Tapioca
 For each client application being tested, run through the normal operations for using the client while the traffic is being captured in each of the three modes:

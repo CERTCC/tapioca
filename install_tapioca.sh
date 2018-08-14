@@ -476,6 +476,7 @@ if [ "$internal_net" != "LAN_DEVICE" ] && [ "$external_net" !=  "WAN_DEVICE" ] ;
     # Save iptables rule as default
     sudo service iptables save
     sudo iptables-save
+    sudo netfilter-persistent save
 else
     # Set up basic iptables default deny for incoming traffic
 

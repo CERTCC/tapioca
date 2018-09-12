@@ -5,5 +5,5 @@ Type=Application
 Exec=xfce4-terminal --disable-server -T "mitmweb" -e "mitmweb.sh --showhost --no-server --rfile %f"
 Name=mitmweb
 Comment=Custom definition for mitmweb
-Terminal=true
+Terminal=false
 Icon=chromium-browser

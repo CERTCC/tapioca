@@ -5,5 +5,5 @@ Type=Application
 Exec=xfce4-terminal --disable-server -T "mitmproxy" -e "mitmproxy --showhost --no-server --rfile %f"
 Name=mitmproxy
 Comment=Custom definition for mitmproxy
-Terminal=true
+Terminal=false
 Icon=utilities-terminal

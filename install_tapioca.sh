@@ -208,7 +208,11 @@ elif [ ! -z "$yum" ]; then
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel
     sudo yum -y install python-colorama
-    sudo yum -y install python3-colorama
+    if [ $? -ne 0 ]; then
+      echo "python-colorama not found. Installing via pip..."
+      sudo pip2 install colorama
+    fi
+
 elif [ ! -z "$apt" ]; then
     #apt-get is present.  So probably Ubuntu
     sudo apt-get -y update

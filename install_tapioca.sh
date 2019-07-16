@@ -204,9 +204,11 @@ elif [ ! -z "$yum" ]; then
     dhcp bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \
     tmux iptables-services iw hostapd wxPython mousepad tk-devel \
     glib2-devel qt-devel gnutls-devel c-ares-devel libsmi-devel libcap-devel \
-    GeoIP-devel libnl3-devel libpcap-devel PyQt4 python-colorama gnome-icon-theme.noarch \
+    GeoIP-devel libnl3-devel libpcap-devel PyQt4 gnome-icon-theme.noarch \
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel
+    sudo yum -y install python-colorama
+    sudo yum -y install python3-colorama
 elif [ ! -z "$apt" ]; then
     #apt-get is present.  So probably Ubuntu
     sudo apt-get -y update

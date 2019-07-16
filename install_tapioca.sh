@@ -301,8 +301,8 @@ if [ -f /etc/lightdm/lightdm.conf ]; then
 fi
 
 
-# Check if the miniconda python3.6 binary exists
-if [ ! -f ~/miniconda/bin/python3.6 ]; then
+# Check if the miniconda python3.7 binary exists
+if [ ! -f ~/miniconda/bin/python3.7 ]; then
     # install miniconda
     if [ "$arch" == "x86_64" ]; then
         echo "Installing x86_64 miniconda..."
@@ -322,19 +322,19 @@ fi
 
 if [ -z "$miniconda_python" ]; then
     # No miniconda (e.g. Raspberry Pi), so standard Python install
-    python36=`which python3.6 2> /dev/null`
+    python37=`which python3.7 2> /dev/null`
 
-    if [ -z "$python36" ]; then
+    if [ -z "$python37" ]; then
         mkdir -p ~/in
         pushd ~/in
-        rm -f Python-3.6.1.tgz
-        rm -rf Python-3.6.1
-        wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz
-        tar xavf Python-3.6.1.tgz
-        pushd Python-3.6.1/
+        rm -f Python-3.7.4.tgz
+        rm -rf Python-3.7.4
+        wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz
+        tar xavf Python-3.7.4.tgz
+        pushd Python-3.7.4/
         ./configure --prefix=/usr/local && sudo make altinstall
         if [ $? -ne 0 ]; then
-          echo "Error building python 3.6. Please check errors and try again."
+          echo "Error building python 3.7. Please check errors and try again."
           exit 1
         fi
         popd; popd
@@ -374,17 +374,17 @@ else
 
     export PATH="$HOME/miniconda/bin:$PATH"
 
-    python36=`which python3.6 2> /dev/null`
+    python37=`which python3.7 2> /dev/null`
 
-    if [ -z "$python36" ]; then
-        # Python 3.6 binary is there, but not in path
+    if [ -z "$python37" ]; then
+        # Python 3.7 binary is there, but not in path
         export PATH="$HOME/miniconda/bin:$PATH"
-        python36=`which python3.6 2> /dev/null`
+        python37=`which python3.7 2> /dev/null`
     fi
 
 
-    if [ -z "$python36" ]; then
-        echo "python 3.6 not found in path. Please check miniconda installation."
+    if [ -z "$python37" ]; then
+        echo "python 3.7 not found in path. Please check miniconda installation."
         exit 1
     fi
 
@@ -402,11 +402,11 @@ fi
 if [ ! -f /usr/local/bin/tshark ]; then
     mkdir -p ~/in
     pushd ~/in
-    rm -f wireshark-2.6.4.tar.xz
-    rm -rf wireshark-2.6.4
-    wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.4.tar.xz
-    tar xavf wireshark-2.6.4.tar.xz
-    pushd wireshark-2.6.4/
+    rm -f wireshark-2.6.9.tar.xz
+    rm -rf wireshark-2.6.9
+    wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.9.tar.xz
+    tar xavf wireshark-2.6.9.tar.xz
+    pushd wireshark-2.6.9/
     ./configure && make && sudo make install
     if [ $? -ne 0 ]; then
         echo "Error building Wireshark. Please check errors and try again."
@@ -429,7 +429,7 @@ sudo setcap cap_net_raw,cap_net_admin+ep `which dumpcap 2> /dev/null`
 # Confirm pip is there
 if [ -z "$miniconda_python" ]; then
     # No miniconda (e.g. Raspberry Pi), so standard Python install
-    mypip=`which pip3.6 2> /dev/null`
+    mypip=`which pip3.7 2> /dev/null`
     echo "Using systemwide pip: $mypip"
 else
     # miniconda python
@@ -438,7 +438,7 @@ else
 fi
 
 if [ -z "$mypip" ]; then
-    "python 3.6 not found in path. Please check miniconda installation."
+    "python 3.7 not found in path. Please check miniconda installation."
     exit 1
 fi
 

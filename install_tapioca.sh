@@ -436,7 +436,7 @@ sudo setcap cap_net_raw,cap_net_admin+ep `which dumpcap 2> /dev/null`
 # Confirm pip is there
 if [ -z "$miniconda_python" ]; then
     # No miniconda (e.g. Raspberry Pi), so standard Python install
-    mypip=`which pip3.7 2> /dev/null`
+    mypip=`which pip3 2> /dev/null`
     echo "Using systemwide pip: $mypip"
 else
     # miniconda python

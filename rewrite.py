@@ -52,6 +52,7 @@ def response(flow: http.HTTPFlow) -> None:
 
 def request(flow: http.HTTPFlow) -> None:
     flow.request.replace(req_before, req_after)
+    #flow.request.headers['User-Agent'] = 'Custom User-Agent'
 
 ## Below is an example that will answer any question for a URI that ends in '.exe'
 ## with the bytes from calc.exe (uncomment the above as well)

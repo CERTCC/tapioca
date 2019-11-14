@@ -162,15 +162,15 @@ if [ -z "$path_set" ]; then
     cp .bash_profile.tmp ~/.bash_profile
 fi
 
-if [ ! -z "$dnf" ]; then
+if [ ! -z "$dnf" ] && [ "$VERSION" == "Fedora" ]; then
     # dnf is present. So probably Fedora
     sudo dnf -y group install "Fedora Workstation"
     sudo dnf -y group install xfce "Development tools" "Development Libraries"
     sudo dnf -y install perl-Pod-Html gcc-c++ redhat-rpm-config python3-devel
 fi
 
-if [ ! -z "$yum" ] && [ -z "$dnf" ]; then
-    #EL7 and not Fedora
+if [ ! -z "$yum" ]; then
+    #EL and not Fedora
     sudo yum makecache fast
     sudo yum -y install epel-release
     sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Development Libraries"
@@ -184,7 +184,7 @@ if [ ! -z "$zypper" ] && [ ! -z "$apt" ]; then
     dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
     tmux iw hostapd python-wxWidgets-3_0 mousepad tk-devel \
     glib2-devel libqt4-devel libgnutls-devel c-ares-devel libsmi-devel libcap-devel \
-    libGeoIP-devel libnl3-devel libpcap-devel python2-qt4 gnome-icon-theme \
+    libGeoIP-devel libnl3-devel libpcap-devel python2-qt4 python2-colorama gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
     libnghttp2-devel libcap-progs NetworkManager-applet lightdm dhcp-server \
     net-tools-deprecated
@@ -195,7 +195,7 @@ elif [ ! -z "$zypper" ]; then
     dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
     tmux iw hostapd wxPython mousepad tk-devel \
     glib2-devel qt-devel gnutls-devel libcares-devel libsmi-devel libcap-devel \
-    libGeoIP-devel libnl3-devel libpcap-devel python-qt4 gnome-icon-theme \
+    libGeoIP-devel libnl3-devel libpcap-devel python-qt4 python-colorama gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
     libnghttp2-devel libcap-progs NetworkManager-gnome lightdm dhcp-server
 elif [ ! -z "$yum" ]; then
@@ -208,6 +208,11 @@ elif [ ! -z "$yum" ]; then
     GeoIP-devel libnl3-devel libpcap-devel PyQt4 gnome-icon-theme.noarch \
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel
+    sudo yum -y install python-colorama
+    if [ $? -ne 0 ]; then
+      echo "python-colorama not found. Installing via pip..."
+      sudo pip2 install colorama
+    fi
 
 elif [ ! -z "$apt" ]; then
     #apt-get is present.  So probably Ubuntu
@@ -217,7 +222,7 @@ elif [ ! -z "$apt" ]; then
     chromium-browser telnet nano xdotool tmux iptables iw nmap xterm \
     libglib2.0-dev libqt4-dev libc-ares-dev libsmi2-dev \
     libcap-dev libgeoip-dev libnl-3-dev libpcap-dev python-qt4 \
-    python3-pyqt4 python3-colorama python3-pip \
+    python3-pyqt4 python-colorama python3-pip \
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
     libsnappy-dev libgcrypt-dev ifupdown

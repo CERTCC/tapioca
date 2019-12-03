@@ -392,6 +392,7 @@ else
 
     if [ -z "$python37" ]; then
         echo "python 3.7 not found in path. Please check miniconda installation."
+        echo "Simply removing the ~/miniconda directory can allow for a clean installation."
         exit 1
     fi
 

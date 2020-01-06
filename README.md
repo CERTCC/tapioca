@@ -54,6 +54,9 @@ Follow any prompts.
 1. If given a choice, log in with the tapioca user and choose the Xfce login session.
 If for any reason the installation fails, check and correct any relevant errors and run `./install_tapioca.sh` again.
 
+### About Wireshark Versions
+Tapioca downloads and compiles Wireshark to ensure compatibility with RedHat Enterprise Linux and Centos, which provide Wireshark versions older than what Tapioca needs.  If you wish to have Tapioca use your own version of Wireshark, simply ensure that `/usr/local/bin/tshark` is from the version of Wireshark that you wish to use before running `./install_tapioca.sh`.
+
 # Tapioca Quick Start
 
 ### Testing Apps on Wireless Devices Using HOSTAP adapter

@@ -410,11 +410,11 @@ fi
 if [ ! -f /usr/local/bin/tshark ]; then
     mkdir -p ~/in
     pushd ~/in
-    rm -f wireshark-2.6.9.tar.xz
-    rm -rf wireshark-2.6.9
-    wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.9.tar.xz
-    tar xavf wireshark-2.6.9.tar.xz
-    pushd wireshark-2.6.9/
+    rm -f wireshark-2.6.13.tar.xz
+    rm -rf wireshark-2.6.13
+    wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.13.tar.xz
+    tar xavf wireshark-2.6.13.tar.xz
+    pushd wireshark-2.6.13/
     ./configure && make && sudo make install
     if [ $? -ne 0 ]; then
         echo "Error building Wireshark. Please check errors and try again."

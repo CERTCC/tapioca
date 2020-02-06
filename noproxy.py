@@ -46,7 +46,7 @@ def main():
         with open('.killapp', 'w+') as killapp:
             killapp.write('')
 
-    subprocess.call(['./noproxy.sh'])
+    subprocess.call(['xfce4-terminal', '--disable-server', '-T', 'Proxy reset',  '-e', './noproxy.sh'])
 
 
 if __name__ == "__main__":

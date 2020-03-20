@@ -187,7 +187,7 @@ if [ ! -z "$zypper" ] && [ ! -z "$apt" ]; then
     libGeoIP-devel libnl3-devel libpcap-devel python2-qt4 python2-colorama gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
     libnghttp2-devel libcap-progs NetworkManager-applet lightdm dhcp-server \
-    net-tools-deprecated
+    net-tools-deprecated xclip
 elif [ ! -z "$zypper" ]; then
     # zypper is present.  So probably OpenSUSE
     sudo zypper -n install patterns-openSUSE-devel_basis patterns-openSUSE-xfce_basis \
@@ -197,7 +197,7 @@ elif [ ! -z "$zypper" ]; then
     glib2-devel qt-devel gnutls-devel libcares-devel libsmi-devel libcap-devel \
     libGeoIP-devel libnl3-devel libpcap-devel python-qt4 python-colorama gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
-    libnghttp2-devel libcap-progs NetworkManager-gnome lightdm dhcp-server
+    libnghttp2-devel libcap-progs NetworkManager-gnome lightdm dhcp-server xclip
 elif [ ! -z "$yum" ]; then
     # yum is present. EL7 and Fedora.
     sudo yum -y install gcc libxml2 libxml2-devel libxslt libxslt-devel \
@@ -207,7 +207,7 @@ elif [ ! -z "$yum" ]; then
     glib2-devel qt-devel gnutls-devel c-ares-devel libsmi-devel libcap-devel \
     GeoIP-devel libnl3-devel libpcap-devel PyQt4 gnome-icon-theme.noarch \
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
-    libgcrypt-devel
+    libgcrypt-devel xclip
     sudo yum -y install python-colorama
     if [ $? -ne 0 ]; then
       echo "python-colorama not found. Installing via pip..."
@@ -225,7 +225,7 @@ elif [ ! -z "$apt" ]; then
     python3-pyqt4 python-colorama python3-pip \
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
-    libsnappy-dev libgcrypt-dev ifupdown
+    libsnappy-dev libgcrypt-dev ifupdown xclip
 fi
 
 if [ $? -ne 0 ]; then

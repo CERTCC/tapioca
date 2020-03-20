@@ -28,4 +28,6 @@
 # END LICENSE #
 
 rm -rf ~/.mitmproxy
+mkdir ~/.mitmproxy
+cp ./.mitmproxy/keys.yaml ~/.mitmproxy
 xfce4-terminal --disable-server -T "mitmproxy" -e "./restartcap.sh ssltest $1 $2"

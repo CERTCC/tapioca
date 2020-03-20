@@ -1,0 +1,5 @@
+-
+  key: c
+  ctx: ["flowlist"]
+  cmd: export.clip curl @focus
+  help: Export a flow as a curl command to the clipboard.

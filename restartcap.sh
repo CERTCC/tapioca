@@ -71,7 +71,7 @@ elif [ "$testmode" == "full" ]; then
     if [ -z "$rewrite" ]; then
         SSLKEYLOGFILE=$outputdir/sslkey.log mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log
     else
-	      SSLKEYLOGFILE=$outputdir/sslkey.log mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log -s rewrite.py
+	    SSLKEYLOGFILE=$outputdir/sslkey.log mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log -s rewrite.py
     fi
 elif [ "$testmode" == "tcpdump" ]; then
     # Just capture raw traffic without interfering

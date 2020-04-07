@@ -69,9 +69,9 @@ elif [ "$testmode" == "full" ]; then
     rm -f logs/flows.log
     sudo ./iptables_mitmproxy.sh
     if [ -z "$rewrite" ]; then
-        mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log
+        SSLKEYLOGFILE=$outputdir/sslkey.log mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log
     else
-	mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log -s rewrite.py
+	      SSLKEYLOGFILE=$outputdir/sslkey.log mitmproxy --showhost --anticomp --anticache --ssl-insecure --mode transparent -w $outputdir/flows.log -s rewrite.py
     fi
 elif [ "$testmode" == "tcpdump" ]; then
     # Just capture raw traffic without interfering

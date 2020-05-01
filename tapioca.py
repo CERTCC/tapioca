@@ -29,12 +29,20 @@
 
 import sys
 try:
-    from PyQt4 import QtGui, QtCore
+    from PyQt4 import QtCore
+    from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QCursor, QWidget, QApplication, QIcon, QComboBox, QCheckBox, QFormLayout
+    from PyQt4.QtNetwork import QLocalSocket, QLocalServer, QAbstractSocket
 except ImportError:
-    print(
-        'Be sure to run ./install_tapioca.sh before attempting to run %s' % __file__)
-    sys.exit(1)
-from PyQt4.QtNetwork import QLocalSocket, QLocalServer, QAbstractSocket
+    try:
+        from PyQt5 import QtCore
+        from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QWidget, QApplication, QComboBox, QCheckBox, QFormLayout
+        from PyQt5.QtGui import QCursor, QIcon
+        from PyQt5.QtNetwork import QLocalSocket, QLocalServer, QAbstractSocket
+    except ImportError:
+        print(
+              'Be sure to run ./install_tapioca.sh before attempting to run %s' % __file__)
+        sys.exit(1)
+    
 import subprocess
 import re
 import os
@@ -86,7 +94,7 @@ class Example(QtCore.QObject):
         if os.path.isdir('results'):
             appnames = self.getappnames('results')
         else:
-            QtGui.QMessageBox.critical(
+            QMessageBox.critical(
                 self.gui, 'Tapioca', 'You must run install_tapioca.sh before you can use Tapioca.')
             sys.exit(1)
         if appnames:
@@ -159,31 +167,31 @@ class Example(QtCore.QObject):
             self.gui.lbltcpdump.setToolTip(
                 'Open tcpdump capture for %s' % self.appname)
             self.gui.lbltcpdump.setCursor(
-                QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                QCursor(QtCore.Qt.PointingHandCursor))
         else:
             self.gui.lbltcpdump.setText('')
             self.gui.lbltcpdump.setToolTip('')
-            self.gui.lbltcpdump.setCursor(QtGui.QCursor())
+            self.gui.lbltcpdump.setCursor(QCursor())
         if self.testdone('ssltest'):
             self.gui.lblssltest.setText('COMPLETE')
             self.gui.lblssltest.setToolTip(
                 'Open mitmproxy SSL test capture for %s' % self.appname)
             self.gui.lblssltest.setCursor(
-                QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                QCursor(QtCore.Qt.PointingHandCursor))
         else:
             self.gui.lblssltest.setText('')
             self.gui.lblssltest.setToolTip('')
-            self.gui.lblssltest.setCursor(QtGui.QCursor())
+            self.gui.lblssltest.setCursor(QCursor())
         if self.testdone('full'):
             self.gui.lblfull.setText('COMPLETE')
             self.gui.lblfull.setToolTip(
                 'Open mitmproxy full inspection capture for %s' % self.appname)
             self.gui.lblfull.setCursor(
-                QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                QCursor(QtCore.Qt.PointingHandCursor))
         else:
             self.gui.lblfull.setText('')
             self.gui.lblfull.setToolTip('')
-            self.gui.lblfull.setCursor(QtGui.QCursor())
+            self.gui.lblfull.setCursor(QCursor())
         #print('Getting report states')
         self.gui.updateStatus('report COMPLETE')
 
@@ -249,9 +257,9 @@ class Example(QtCore.QObject):
             # We need a prompt
             prompt_msg = test
             #print('We need a prompt!')
-            reply = QtGui.QMessageBox.question(self.gui, 'Tapioca',
-                                               prompt_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-            if reply == QtGui.QMessageBox.Yes:
+            reply = QMessageBox.question(self.gui, 'Tapioca',
+                                               prompt_msg, QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
                 pass
             else:
                 pass
@@ -268,9 +276,9 @@ class Example(QtCore.QObject):
             prompt_msg = '%s has already has output for the %s test. Continue?' % (
                 self.appname, test)
             #print('We need a prompt!')
-            reply = QtGui.QMessageBox.question(self.gui, 'Tapioca',
-                                               prompt_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-            if reply == QtGui.QMessageBox.Yes:
+            reply = QMessageBox.question(self.gui, 'Tapioca',
+                                               prompt_msg, QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
                 self.clearteststatus(test)
                 self.disabletests()
                 self.workersignal.emit(test)
@@ -289,9 +297,9 @@ class Example(QtCore.QObject):
             prompt_msg = '%s has already has output for the %s test. Continue?' % (
                 self.appname, test)
             #print('We need a prompt!')
-            reply = QtGui.QMessageBox.question(self.gui, 'Tapioca',
-                                               prompt_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-            if reply == QtGui.QMessageBox.Yes:
+            reply = QMessageBox.question(self.gui, 'Tapioca',
+                                               prompt_msg, QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
                 self.clearteststatus(test)
                 self.disabletests()
                 self.workersignal.emit(test)
@@ -304,7 +312,7 @@ class Example(QtCore.QObject):
         time.sleep(3)
         self.gui.activateWindow()
 
-        QtGui.QMessageBox.information(
+        QMessageBox.information(
             self.gui, 'Tapioca', 'Be sure to install the mitmproxy certificate on each device!'
             +
             '\n\nTo start the certificate installation, visit mitm.it on your device and follow instructions.'
@@ -326,9 +334,9 @@ class Example(QtCore.QObject):
             prompt_msg = '%s has already has output for the %s test. Continue?' % (
                 self.appname, test)
             #print('We need a prompt!')
-            reply = QtGui.QMessageBox.question(self.gui, 'Tapioca',
-                                               prompt_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-            if reply == QtGui.QMessageBox.Yes:
+            reply = QMessageBox.question(self.gui, 'Tapioca',
+                                               prompt_msg, QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
                 self.clearteststatus(test)
                 self.disabletests()
                 self.workersignal.emit(test)
@@ -620,7 +628,7 @@ class WorkerObject(QtCore.QObject):
             self.signalStatus.emit(prompt)
 
 
-class Window(QtGui.QWidget):
+class Window(QWidget):
     '''
     This is the GUI object.  Any gui-related operations happen here
     '''
@@ -650,79 +658,79 @@ class Window(QtGui.QWidget):
         if self.external_net != 'WAN_DEVICE' and self.internal_net != 'LAN_DEVICE':
             self.unconfigured = False
 
-        QtGui.QWidget.__init__(self)
+        QWidget.__init__(self)
 
         self.setWindowTitle('Tapioca')
-        app_icon = QtGui.QIcon()
+        app_icon = QIcon()
         app_icon.addFile('cert.ico', QtCore.QSize(32, 32))
         self.setWindowIcon(app_icon)
 
-        self.lblupstream = QtGui.QLabel('<b>Upstream-network device:</b>')
-        self.lblupstreamval = QtGui.QLabel(self.external_net)
+        self.lblupstream = QLabel('<b>Upstream-network device:</b>')
+        self.lblupstreamval = QLabel(self.external_net)
         self.lblupstreamval.setToolTip(
             'Ethernet device used for internet connectivity')
-        self.lbllocal = QtGui.QLabel('<b>Locally-provided-network device:</b>')
-        self.lbllocalval = QtGui.QLabel(self.internal_net)
+        self.lbllocal = QLabel('<b>Locally-provided-network device:</b>')
+        self.lbllocalval = QLabel(self.internal_net)
         self.lbllocalval.setToolTip(
             'Ethernet device used for connectivity to device under test')
-        self.spacer = QtGui.QLabel()
-        self.net_status = QtGui.QLabel()
+        self.spacer = QLabel()
+        self.net_status = QLabel()
         self.appname = ''
-        self.lblapp = QtGui.QLabel('<b>Capture session:</b>')
-        self.cboapp = QtGui.QComboBox()
+        self.lblapp = QLabel('<b>Capture session:</b>')
+        self.cboapp = QComboBox()
         self.cboapp.setEditable(True)
         self.cboapp.setToolTip(
             'Select an existing session from the dropdown or type a new one')
-        #self.leapp = QtGui.QLineEdit()
-        self.btntcpdump = QtGui.QPushButton(
+        #self.leapp = QLineEdit()
+        self.btntcpdump = QPushButton(
             'Capture - All traffic with tcpdump')
         self.btntcpdump.setToolTip(
             'Launch tcpdump to capture all traffic without interception')
-        self.lbltcpdump = QtGui.QLabel()
-        self.chkrewrite = QtGui.QCheckBox('Modify mitmproxy traffic')
+        self.lbltcpdump = QLabel()
+        self.chkrewrite = QCheckBox('Modify mitmproxy traffic')
         self.chkrewrite.setToolTip(
             'Edit mitmproxy rules for traffic modification.\nOnly affects "Verify SSL Validation" and "Full HTTPS inspection" tests')
-        self.btnrewrite = QtGui.QPushButton('Edit modification rules')
+        self.btnrewrite = QPushButton('Edit modification rules')
         self.btnrewrite.setToolTip(
             'Modify mitmproxy traffic rewriting rules')
         self.btnrewrite.setEnabled(False)
-        self.btnssl = QtGui.QPushButton('Capture - Verify SSL validation')
+        self.btnssl = QPushButton('Capture - Verify SSL validation')
         self.btnssl.setToolTip(
             'Launch mitmproxy to capture HTTP(S) traffic with an invalid certificate')
-        self.lblssltest = QtGui.QLabel()
-        self.btnfull = QtGui.QPushButton('Capture - Full HTTPS inspection')
+        self.lblssltest = QLabel()
+        self.btnfull = QPushButton('Capture - Full HTTPS inspection')
         self.btnfull.setToolTip(
             'Launch mitmproxy to capture HTTP(S) traffic with an installed certificate')
-        self.lblfull = QtGui.QLabel()
-        self.btnstop = QtGui.QPushButton('Stop current capture')
-        self.allreports = QtGui.QPushButton('Generate reports')
+        self.lblfull = QLabel()
+        self.btnstop = QPushButton('Stop current capture')
+        self.allreports = QPushButton('Generate reports')
         self.allreports.setToolTip(
             'Generate reports for all tests performed for this capture')
-        self.lblsslresults = QtGui.QLabel('<b>SSL test results:</b>')
-        self.lblsslresultsval = QtGui.QLabel()
-        self.lblcryptoresults = QtGui.QLabel('<b>Crypto test results:</b>')
-        self.lblcryptoresultsval = QtGui.QLabel()
-        self.lblnetresults = QtGui.QLabel(
+        self.lblsslresults = QLabel('<b>SSL test results:</b>')
+        self.lblsslresultsval = QLabel()
+        self.lblcryptoresults = QLabel('<b>Crypto test results:</b>')
+        self.lblcryptoresultsval = QLabel()
+        self.lblnetresults = QLabel(
             '<b>Network connectivity test results:</b>')
-        self.lblnetresultsval = QtGui.QLabel()
+        self.lblnetresultsval = QLabel()
 
-        self.lblsearch = QtGui.QLabel('<b>Search term:</b>')
-        self.searchbox = QtGui.QLineEdit()
+        self.lblsearch = QLabel('<b>Search term:</b>')
+        self.searchbox = QLineEdit()
         self.searchbox.setToolTip(
             'Case-insensitive perl-compatible regex pattern')
-        self.chksearch = QtGui.QCheckBox('Search multiple encodings')
+        self.chksearch = QCheckBox('Search multiple encodings')
         self.chksearch.setToolTip(
             'Search for base64, md5, and sha1 encodings as well - INCOMPATIBLE with Regex')
-        self.btnsearch = QtGui.QPushButton('Search')
+        self.btnsearch = QPushButton('Search')
         self.btnsearch.setToolTip(
             'Search for term (perl-compatible regex) in all captures')
-        self.lblsearchresults = QtGui.QLabel()
-        self.lblsearchfound = QtGui.QLabel()
-        self.lblsearchunprotfound = QtGui.QLabel()
-        self.lblsearchprotfound = QtGui.QLabel()
+        self.lblsearchresults = QLabel()
+        self.lblsearchfound = QLabel()
+        self.lblsearchunprotfound = QLabel()
+        self.lblsearchprotfound = QLabel()
 
-        #layout = QtGui.QVBoxLayout(self)
-        layout = QtGui.QFormLayout(self)
+        #layout = QVBoxLayout(self)
+        layout = QFormLayout(self)
         layout.addRow(self.lblupstream, self.lblupstreamval)
         layout.addRow(self.lbllocal, self.lbllocalval)
         layout.addRow(self.net_status)
@@ -773,13 +781,13 @@ class Window(QtGui.QWidget):
         #print('Clearing search results...')
         self.lblsearchresults.setText('')
         self.lblsearchfound.setText('')
-        self.lblsearchfound.setCursor(QtGui.QCursor())
+        self.lblsearchfound.setCursor(QCursor())
         self.lblsearchfound.setToolTip('')
         self.lblsearchunprotfound.setText('')
-        self.lblsearchunprotfound.setCursor(QtGui.QCursor())
+        self.lblsearchunprotfound.setCursor(QCursor())
         self.lblsearchunprotfound.setToolTip('')
         self.lblsearchprotfound.setText('')
-        self.lblsearchprotfound.setCursor(QtGui.QCursor())
+        self.lblsearchprotfound.setCursor(QCursor())
         self.lblsearchprotfound.setToolTip('')
 
     @QtCore.pyqtSlot()
@@ -793,11 +801,11 @@ class Window(QtGui.QWidget):
                 searchresults = 'Unencrypted traffic'
                 self.lblsearchfound.setText(searchresults)
                 self.lblsearchfound.setCursor(
-                    QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                    QCursor(QtCore.Qt.PointingHandCursor))
                 self.lblsearchfound.setToolTip('Open raw tcpdump capture')
             else:
                 self.lblsearchfound.setText('')
-                self.lblsearchfound.setCursor(QtGui.QCursor())
+                self.lblsearchfound.setCursor(QCursor())
                 self.lblsearchfound.setToolTip('')
 
             if self.foundunprot:
@@ -806,12 +814,12 @@ class Window(QtGui.QWidget):
                 searchresults = 'Unprotected HTTPS traffic'
                 self.lblsearchunprotfound.setText(searchresults)
                 self.lblsearchunprotfound.setCursor(
-                    QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                    QCursor(QtCore.Qt.PointingHandCursor))
                 self.lblsearchunprotfound.setToolTip(
                     'Open SSL test mitmproxy capture')
             else:
                 self.lblsearchunprotfound.setText('')
-                self.lblsearchunprotfound.setCursor(QtGui.QCursor())
+                self.lblsearchunprotfound.setCursor(QCursor())
                 self.lblsearchunprotfound.setToolTip('')
 
             if self.foundprot:
@@ -820,12 +828,12 @@ class Window(QtGui.QWidget):
                 searchresults = 'Protected HTTPS traffic'
                 self.lblsearchprotfound.setText(searchresults)
                 self.lblsearchprotfound.setCursor(
-                    QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                    QCursor(QtCore.Qt.PointingHandCursor))
                 self.lblsearchprotfound.setToolTip(
                     'Open full HTTPS inspection mitmproxy capture')
             else:
                 self.lblsearchprotfound.setText('')
-                self.lblsearchprotfound.setCursor(QtGui.QCursor())
+                self.lblsearchprotfound.setCursor(QCursor())
                 self.lblsearchprotfound.setToolTip('')
 
         else:
@@ -836,13 +844,13 @@ class Window(QtGui.QWidget):
 
     def _clearsearchresult(self):
         self.lblsearchprotfound.setText('')
-        self.lblsearchprotfound.setCursor(QtGui.QCursor())
+        self.lblsearchprotfound.setCursor(QCursor())
         self.lblsearchprotfound.setToolTip('')
         self.lblsearchunprotfound.setText('')
-        self.lblsearchunprotfound.setCursor(QtGui.QCursor())
+        self.lblsearchunprotfound.setCursor(QCursor())
         self.lblsearchunprotfound.setToolTip('')
         self.lblsearchfound.setText('')
-        self.lblsearchfound.setCursor(QtGui.QCursor())
+        self.lblsearchfound.setCursor(QCursor())
         self.lblsearchfound.setToolTip('')
 
     @QtCore.pyqtSlot(str)
@@ -876,17 +884,17 @@ class Window(QtGui.QWidget):
     @QtCore.pyqtSlot()
     def center(self):
         frameGm = self.frameGeometry()
-        screen = QtGui.QApplication.desktop().screenNumber(
-            QtGui.QApplication.desktop().cursor().pos())
-        centerPoint = QtGui.QApplication.desktop().screenGeometry(
+        screen = QApplication.desktop().screenNumber(
+            QApplication.desktop().cursor().pos())
+        centerPoint = QApplication.desktop().screenGeometry(
             screen).center()
         frameGm.moveCenter(centerPoint)
         self.move(frameGm.topLeft())
 
     @QtCore.pyqtSlot(str)
     def getapp(self, appname):
-        text, ok = QtGui.QInputDialog.getText(
-            self, 'Tapioca', 'Enter capture session name:', QtGui.QLineEdit.Normal,
+        text, ok = QInputDialog.getText(
+            self, 'Tapioca', 'Enter capture session name:', QLineEdit.Normal,
             appname)
         appname = re.sub(r'\W+', '', str(text)).lower()
 
@@ -910,15 +918,15 @@ class Window(QtGui.QWidget):
         self.lblsslresultsval.setText('')
         self.lblsslresultsval.setToolTip('')
         self.lblsslresultsval.setCursor(
-            QtGui.QCursor())
+            QCursor())
         self.lblcryptoresultsval.setText('')
         self.lblcryptoresultsval.setToolTip('')
         self.lblcryptoresultsval.setCursor(
-            QtGui.QCursor())
+            QCursor())
         self.lblnetresultsval.setText('')
         self.lblnetresultsval.setToolTip('')
         self.lblnetresultsval.setCursor(
-            QtGui.QCursor())
+            QCursor())
 
     @QtCore.pyqtSlot(str)
     def updateStatus(self, test):
@@ -942,7 +950,7 @@ class Window(QtGui.QWidget):
                         self.lblsslresultsval.setToolTip(
                             'Open SSL test report')
                         self.lblsslresultsval.setCursor(
-                            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                            QCursor(QtCore.Qt.PointingHandCursor))
                         if failures[test] is True:
                             #print('failed ssl!')
                             self.lblsslresultsval.setText(
@@ -955,7 +963,7 @@ class Window(QtGui.QWidget):
                         self.lblcryptoresultsval.setToolTip(
                             'Open SSL test report')
                         self.lblcryptoresultsval.setCursor(
-                            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                            QCursor(QtCore.Qt.PointingHandCursor))
                         if failures[test] is True:
                             self.lblcryptoresultsval.setText(
                                 '<font color="red">FAILED</font>')
@@ -966,7 +974,7 @@ class Window(QtGui.QWidget):
                         self.lblnetresultsval.setToolTip(
                             'Open SSL test report')
                         self.lblnetresultsval.setCursor(
-                            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                            QCursor(QtCore.Qt.PointingHandCursor))
                         if test in failures:
                             self.lblnetresultsval.setText('VIEW')
                         else:
@@ -1001,34 +1009,34 @@ class Window(QtGui.QWidget):
                         self.lbltcpdump.setToolTip(
                             'Open tcpdump capture for %s' % self.appname)
                         self.lbltcpdump.setCursor(
-                            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                            QCursor(QtCore.Qt.PointingHandCursor))
                     else:
                         self.lbltcpdump.setToolTip('')
-                        self.lbltcpdump.setCursor(QtGui.QCursor())
+                        self.lbltcpdump.setCursor(QCursor())
                 elif testname == 'ssltest':
                     self.lblssltest.setText(status)
                     if status == 'COMPLETE':
                         self.lblssltest.setToolTip(
                             'Open mitmproxy SSL test capture for %s' % self.appname)
                         self.lblssltest.setCursor(
-                            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                            QCursor(QtCore.Qt.PointingHandCursor))
                     else:
                         self.lblssltest.setToolTip('')
-                        self.lblssltest.setCursor(QtGui.QCursor())
+                        self.lblssltest.setCursor(QCursor())
                 elif testname == 'full':
                     self.lblfull.setText(status)
                     if status == 'COMPLETE':
                         self.lblfull.setToolTip(
                             'Open mitmproxy full inspection capture for %s' % self.appname)
                         self.lblfull.setCursor(
-                            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                            QCursor(QtCore.Qt.PointingHandCursor))
                     else:
                         self.lblfull.setToolTip('')
-                        self.lblfull.setCursor(QtGui.QCursor())
+                        self.lblfull.setCursor(QCursor())
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
 
     # self.qtappname = 'Tapioca'
     socket = QLocalSocket()

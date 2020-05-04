@@ -279,7 +279,7 @@ if [ -f /etc/sysconfig/dhcpd ]; then
 fi
 
 # Make xfce the default for tapioca user
-if [ -f /var/lib/AccountsService/users/tapioca ]; then
+if sudo [ -f /var/lib/AccountsService/users/tapioca ]; then
     # There may be a default session
     sudo grep XSession /var/lib/AccountsService/users/tapioca > /dev/null
     if [ $? -eq 0 ]; then

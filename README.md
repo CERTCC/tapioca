@@ -19,7 +19,7 @@
 # Overview
 CERT Tapioca is a utility for testing mobile or any other application using MITM techniques.  CERT Tapioca development was sponsored by the United States Army Armament Research, Development and Engineering Center (ARDEC) as well as the United States Department of Homeland Security (DHS).  Installation requirements:
 
-1. Supported platforms include: Raspbian (Jessie or Stretch), Centos 7, RedHat Enterprise Linux 7, Fedora (24 through 28), or Ubuntu (14.04, 16.04, or 18.04).   Other platforms may work, but the installer has only been tested on these distros.
+1. Supported platforms include: Raspbian (Jessie or Stretch), Centos 7, RedHat Enterprise Linux 7, Fedora (24 through 28), or Ubuntu (14.04, 16.04, 18.04, or 20.04).   Other platforms may work, but the installer has only been tested on these distros.
 1. 1GB of RAM
 1. Upstream internet connectivity that does **not** require an explicit proxy.
 1. Ability to provide wireless access to your device under test, which means **either**:

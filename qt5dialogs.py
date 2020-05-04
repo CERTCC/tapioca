@@ -47,12 +47,6 @@ def YesNo(question='', caption='Tapioca'):
     else:
         return False
 
-#    dlg = wx.MessageDialog(
-#        parent, question, caption, wx.YES_NO | wx.ICON_QUESTION)
-#    result = dlg.ShowModal() == wx.ID_YES
-#    dlg.Destroy()
-#    return result
-
 
 def Info(message='', caption='Tapioca'):
     msgBox.setIcon(QMessageBox.Information)
@@ -60,11 +54,6 @@ def Info(message='', caption='Tapioca'):
     msgBox.setWindowTitle(caption)
     msgBox.setStandardButtons(QMessageBox.Ok)
     msgBox.exec()
-
-#    dlg = wx.MessageDialog(
-#        parent, message, caption, wx.OK | wx.ICON_INFORMATION)
-#    dlg.ShowModal()
-#    dlg.Destroy()
 
 
 def Warn(message='', caption='Warning!'):
@@ -74,25 +63,7 @@ def Warn(message='', caption='Warning!'):
     msgBox.setStandardButtons(QMessageBox.Ok)
     msgBox.exec()
 
-#    dlg = wx.MessageDialog(parent, message, caption, wx.OK | wx.ICON_WARNING)
-#    dlg.ShowModal()
-#    dlg.Destroy()
-
 
 def Ask(message='', caption='Tapioca', default_value=''):
     text, ok = QInputDialog.getText(win, caption, message)
     return text
-    #testname, okPressed = QInputDialog.getItem(self, caption, message)
-    #msgBox.setIcon(QMessageBox.Information)
-    #askBox.setTextValue(message)
-    #askBox.setWindowTitle(caption)
-    #askBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-    #returnValue = 
-    
-    
-#    dlg = wx.TextEntryDialog(
-#        parent, message, caption, defaultValue=default_value)
-#    dlg.ShowModal()
-#    result = dlg.GetValue()
-#    dlg.Destroy()
-#    return result

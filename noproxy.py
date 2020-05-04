@@ -27,17 +27,24 @@
 #
 # END LICENSE #
 
-import wx
 import subprocess
 import sys
 import os
-import dialogs
+try:
+    import wx
+    import dialogs
+except ImportError:
+    import qt5dialogs as dialogs
 
 
 def main():
-    # Initialize wx App
-    app = wx.App()
-    app.MainLoop()
+    try:
+        # Initialize wx App
+        app = wx.App()
+        app.MainLoop()
+    except NameError:
+        # We're using Qt5 dialogs
+        pass
 
     if not os.path.isfile('.killapp'):
         # Call Dialog

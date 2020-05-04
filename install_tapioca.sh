@@ -281,7 +281,7 @@ fi
 # Make xfce the default for tapioca user
 if [ -f /var/lib/AccountsService/users/tapioca ]; then
     # There may be a default session
-    grep XSession /var/lib/AccountsService/users/tapioca > /dev/null
+    sudo grep XSession /var/lib/AccountsService/users/tapioca > /dev/null
     if [ $? -eq 0 ]; then
         # Match found.  Replace existing XSession line
         sudo sed -i.bak -e 's/XSession=.*/XSession=xfce/' /var/lib/AccountsService/users/tapioca
@@ -305,6 +305,8 @@ fi
 if [ -f /etc/gdm3/custom.conf ]; then
     # Match found.  Replace existing AutomaticLogin line
     sudo sed -i.bak -e 's/AutomaticLogin=.*/AutomaticLogin=tapioca/' /etc/gdm3/custom.conf
+    sudo sed -i.bak -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
+    sudo sed -i.bak -e 's/#  AutomaticLogin = user1/AutomaticLogin = tapioca/' /etc/gdm3/custom.conf
 fi
 
 # Automatically log in as tapioca user with lightdm

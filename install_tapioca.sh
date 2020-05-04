@@ -463,7 +463,7 @@ if [ ! -z "$miniconda_python" ]; then
     # We have miniconda, so leverage that for what we can
     conda install -y sortedcontainers passlib certifi pyparsing click ruamel_yaml colorama pyopenssl
     $mypip install mitmproxy pyshark GitPython
-    if [ -n "qt5" ]; then
+    if [ -n "$pyqt5" ]; then
       $mypip install PyQt5
     fi
 else
@@ -526,8 +526,13 @@ else
     mkdir -p ~/.config
 fi
 
-# Explicitly launch the tapioca gui with miniconda python3, to use PyQt5
-sed -i.bak -e "s/Exec=/Exec=python /" config/xfce4/panel/launcher-12/14894329291.desktop
+if [ -n "$pyqt5" ]; then
+  explicitpython=`grep 'Exec=python' config/xfce4/panel/launcher-12/14894329291.desktop`
+  if [ -z "$explicitpython" ]; then
+    # Explicitly launch the tapioca gui with miniconda python3, to use PyQt5
+    sed -i.bak -e "s/Exec=/Exec=python /" config/xfce4/panel/launcher-12/14894329291.desktop
+  fi
+fi
 
 cp -r config/xfce4 ~/.config/
 cp config/mimeapps.list ~/.config/

@@ -220,12 +220,18 @@ elif [ ! -z "$apt" ]; then
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install xfce4 xfce4-goodies build-essential libxml2-dev \
     libxslt1-dev python-dev libssl-dev dnsmasq tcpdump isc-dhcp-server \
     chromium-browser telnet nano xdotool tmux iptables iw nmap xterm \
-    libglib2.0-dev libqt4-dev libc-ares-dev libsmi2-dev \
-    libcap-dev libgeoip-dev libnl-3-dev libpcap-dev python-qt4 \
-    python3-pyqt4 python-colorama python3-pip \
+    libglib2.0-dev libc-ares-dev libsmi2-dev \
+    libcap-dev libgeoip-dev libnl-3-dev libpcap-dev \
+    python3-pip \
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
     libsnappy-dev libgcrypt-dev ifupdown xclip
+    DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libqt4-dev \
+    python-qt4 python3-pyqt4 python-colorama
+    if [ $? -ne 0 ]; then
+        echo "No PyQt4 available. Will configure Tapioca to use PyQt5 via Miniconda..."
+        pyqt5=1
+    fi
 fi
 
 if [ $? -ne 0 ]; then
@@ -273,9 +279,9 @@ if [ -f /etc/sysconfig/dhcpd ]; then
 fi
 
 # Make xfce the default for tapioca user
-if [ -f /var/lib/AccountsService/users/tapioca ]; then
+if sudo [ -f /var/lib/AccountsService/users/tapioca ]; then
     # There may be a default session
-    grep XSession /var/lib/AccountsService/users/tapioca > /dev/null
+    sudo grep XSession /var/lib/AccountsService/users/tapioca > /dev/null
     if [ $? -eq 0 ]; then
         # Match found.  Replace existing XSession line
         sudo sed -i.bak -e 's/XSession=.*/XSession=xfce/' /var/lib/AccountsService/users/tapioca
@@ -299,6 +305,8 @@ fi
 if [ -f /etc/gdm3/custom.conf ]; then
     # Match found.  Replace existing AutomaticLogin line
     sudo sed -i.bak -e 's/AutomaticLogin=.*/AutomaticLogin=tapioca/' /etc/gdm3/custom.conf
+    sudo sed -i.bak -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
+    sudo sed -i.bak -e 's/#  AutomaticLogin = user1/AutomaticLogin = tapioca/' /etc/gdm3/custom.conf
 fi
 
 # Automatically log in as tapioca user with lightdm
@@ -455,6 +463,9 @@ if [ ! -z "$miniconda_python" ]; then
     # We have miniconda, so leverage that for what we can
     conda install -y sortedcontainers passlib certifi pyparsing click ruamel_yaml colorama pyopenssl
     $mypip install mitmproxy pyshark GitPython
+    if [ -n "qt5" ]; then
+      $mypip install PyQt5
+    fi
 else
     # system-wide installed python
     sudo $mypip install colorama mitmproxy pyshark GitPython
@@ -514,6 +525,10 @@ if [ -d ~/.config ]; then
 else
     mkdir -p ~/.config
 fi
+
+# Explicitly launch the tapioca gui with miniconda python3, to use PyQt5
+sed -i.bak -e "s/Exec=/Exec=python /" config/xfce4/panel/launcher-12/14894329291.desktop
+
 cp -r config/xfce4 ~/.config/
 cp config/mimeapps.list ~/.config/
 

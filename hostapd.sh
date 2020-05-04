@@ -73,6 +73,12 @@ fi
 network_up=`nmcli device status | grep " connected " | head -n1`
 
 if [ -z "$network_up" ]; then
+  # Ubuntu 20.04 doesn't use NetworkManager.  Possibly others as well.
+  # Fall back to just ip link
+  network_up=`ip link | grep "state UP"`
+fi
+
+if [ -z "$network_up" ]; then
     echo "*** No network connection appears to be up ***"
     echo "Please make sure your upstream network is working"
     echo "before proceeding with a soft AP"

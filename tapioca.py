@@ -30,19 +30,19 @@
 import sys
 try:
     from PyQt4 import QtCore
-    from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QCursor, QWidget, QApplication, QIcon, QComboBox, QCheckBox, QFormLayout
+    from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QCursor, QWidget, QApplication, QIcon, QComboBox, QCheckBox, QFormLayout, QInputDialog, QMessageBox
     from PyQt4.QtNetwork import QLocalSocket, QLocalServer, QAbstractSocket
 except ImportError:
     try:
         from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QWidget, QApplication, QComboBox, QCheckBox, QFormLayout
+        from PyQt5.QtWidgets import QLabel, QLineEdit, QPushButton, QWidget, QApplication, QComboBox, QCheckBox, QFormLayout, QInputDialog, QMessageBox
         from PyQt5.QtGui import QCursor, QIcon
         from PyQt5.QtNetwork import QLocalSocket, QLocalServer, QAbstractSocket
     except ImportError:
         print(
               'Be sure to run ./install_tapioca.sh before attempting to run %s' % __file__)
         sys.exit(1)
-    
+
 import subprocess
 import re
 import os

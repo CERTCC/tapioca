@@ -534,6 +534,11 @@ if [ -n "$pyqt5" ]; then
   fi
 fi
 
+if [ -n "$pyqt5" ] && [ -n "$apt" ]; then
+  # Prevent stray terminal on Ubuntu 20.04
+  sed -i.bak -e "s/Terminal=true/Terminal=false/" config/xfce4/panel/launcher-19/14849278144.desktop
+fi
+
 cp -r config/xfce4 ~/.config/
 cp config/mimeapps.list ~/.config/
 

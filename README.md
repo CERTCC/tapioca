@@ -68,8 +68,9 @@ Tapioca downloads and compiles Wireshark to ensure compatibility with RedHat Ent
 ### Testing Apps on Wireless Devices Using Access point
 1. Configure the OS of the Tapioca machine to set the second network adapter to `10.0.0.1/24`
 1. If this network was not already configured at install time, re-run `./install_tapioca.sh` or manually edit `tapioca.cfg` to specify this network device name for `internal_net`.
+1. If using Tapioca in a virtual machine, configure the second network adapter of the Tapioca VM to be bridged to an unused physical network adapter.
 1. Connect the access point uplink port to the Tapioca LAN port.
-2. Connect your device to the access point.
+1. Connect your device to the access point.
 1. Click the Tapioca GUI button to launch the main testing interface.
 
 ### Testing Apps on Virtual Machines

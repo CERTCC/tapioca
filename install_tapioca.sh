@@ -535,10 +535,10 @@ else
 fi
 
 if [ -n "$pyqt5" ]; then
-  explicitpython=`grep 'Exec=python' config/xfce4/panel/launcher-12/14894329291.desktop`
+  explicitpython=`grep 'Exec=python3' config/xfce4/panel/launcher-12/14894329291.desktop`
   if [ -z "$explicitpython" ]; then
-    # Explicitly launch the tapioca gui with miniconda python3, to use PyQt5
-    sed -i.bak -e "s/Exec=/Exec=python /" config/xfce4/panel/launcher-12/14894329291.desktop
+    # Explicitly launch the tapioca gui python3, to use pip-installed PyQt5
+    sed -i.bak -e "s/Exec=/Exec=python3 /" config/xfce4/panel/launcher-12/14894329291.desktop
   fi
 fi
 

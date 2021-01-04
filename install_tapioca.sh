@@ -229,7 +229,7 @@ elif [ ! -z "$apt" ]; then
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libqt4-dev \
     python-qt4 python3-pyqt4 python-colorama
     if [ $? -ne 0 ]; then
-        echo "No PyQt4 available. Will configure Tapioca to use PyQt5 via Miniconda..."
+        echo "No PyQt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
         pyqt5=1
     fi
 fi

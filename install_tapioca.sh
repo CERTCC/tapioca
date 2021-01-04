@@ -633,6 +633,9 @@ if [ ! -z "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then
     sudo dnf group install xfce
 fi
 
+echo "Setting default icon set to gnome..."
+xfconf-query -c xsettings -p /Net/IconThemeName -s "gnome"
+
 # Install system-wide config files
 sudo cp ~/tapioca/sysctl.conf /etc/
 if [ -d /etc/dhcp ]; then

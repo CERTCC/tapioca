@@ -229,7 +229,7 @@ elif [ ! -z "$apt" ]; then
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libqt4-dev \
     python-qt4 python3-pyqt4 python-colorama
     if [ $? -ne 0 ]; then
-        echo "No PyQt4 available. Will configure Tapioca to use PyQt5 via Miniconda..."
+        echo "No PyQt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
         pyqt5=1
     fi
 fi
@@ -288,6 +288,14 @@ if sudo [ -f /var/lib/AccountsService/users/tapioca ]; then
     else
         # Append a new XSession line
         sudo bash -c "echo XSession=xfce >> /var/lib/AccountsService/users/tapioca"
+        # This file still may not exist if we've never booted with gdm3
+        if sudo [ ! -f /var/lib/AccountsService/users/tapioca ]; then
+          sudo echo "[User]" > /var/lib/AccountsService/users/tapioca
+          sudo echo "  Xsession=xfce" >> /var/lib/AccountsService/users/tapioca
+          sudo chown root /var/lib/AccountsService/users/tapioca
+          sudo chgrp root /var/lib/AccountsService/users/tapioca
+          sudo chmod 644 /var/lib/AccountsService/users/tapioca
+        fi
     fi
 else
     # Set x-session-manager alternative (Raspberry Pi)
@@ -527,10 +535,10 @@ else
 fi
 
 if [ -n "$pyqt5" ]; then
-  explicitpython=`grep 'Exec=python' config/xfce4/panel/launcher-12/14894329291.desktop`
+  explicitpython=`grep 'Exec=python3' config/xfce4/panel/launcher-12/14894329291.desktop`
   if [ -z "$explicitpython" ]; then
-    # Explicitly launch the tapioca gui with miniconda python3, to use PyQt5
-    sed -i.bak -e "s/Exec=/Exec=python /" config/xfce4/panel/launcher-12/14894329291.desktop
+    # Explicitly launch the tapioca gui python3, to use pip-installed PyQt5
+    sed -i.bak -e "s/Exec=/Exec=python3 /" config/xfce4/panel/launcher-12/14894329291.desktop
   fi
 fi
 
@@ -624,6 +632,9 @@ if [ ! -z "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then
     sudo dnf group remove xfce
     sudo dnf group install xfce
 fi
+
+echo "Setting default icon set to gnome..."
+xfconf-query -c xsettings -p /Net/IconThemeName -s "gnome"
 
 # Install system-wide config files
 sudo cp ~/tapioca/sysctl.conf /etc/

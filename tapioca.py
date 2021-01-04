@@ -27,6 +27,16 @@
 #
 # END LICENSE #
 
+import os
+
+# Self-compiled PyQt5 will hang if ICEauthority file exists.  No clue why.
+# Delete it before attempting anything PyQt5
+uid = os.getuid()
+iceauthority = '/run/user/%s/ICEauthority' % user_id
+if os.path.exists(iceauthority):
+    print('%s exists.  Removing...')
+    os.remove(iceauthority)
+
 import sys
 try:
     from PyQt4 import QtCore
@@ -45,7 +55,6 @@ except ImportError:
 
 import subprocess
 import re
-import os
 import tcpdump
 import ssltest
 import proxy

@@ -39,7 +39,7 @@
         <value type="int" value="18"/>
         <value type="int" value="19"/>
       </property>
-      <property name="size" type="uint" value="48">
+      <property name="size" type="uint" value="48"/>
     </property>
   </property>
   <property name="plugins" type="empty">

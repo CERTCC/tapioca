@@ -177,9 +177,8 @@ if [ ! -z "$yum" ]; then
 fi
 
 if [ ! -z "$zypper" ] && [ ! -z "$apt" ]; then
-    # zypper and apt-get are present.  So probably OpenSUSE Tumbleweed
-    # zypper is present.  So probably OpenSUSE Tumbleweed
-    sudo zypper -n install patterns-devel-base-devel_basis patterns-xfce-xfce_basis \
+    # Try packages for modern OpenSUSE
+    if sudo zypper -n install patterns-devel-base-devel_basis patterns-xfce-xfce_basis \
      man libxml2-devel libxml2 libxslt libxslt-devel python3-devel libopenssl-devel dnsmasq tcpdump \
     dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
     tmux iw hostapd python-wxWidgets-3_0 mousepad tk-devel \
@@ -187,17 +186,19 @@ if [ ! -z "$zypper" ] && [ ! -z "$apt" ]; then
     libGeoIP-devel libnl3-devel libpcap-devel python2-qt4 python2-colorama gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
     libnghttp2-devel libcap-progs NetworkManager-applet lightdm dhcp-server \
-    net-tools-deprecated xclip
-elif [ ! -z "$zypper" ]; then
-    # zypper is present.  So probably OpenSUSE
-    sudo zypper -n install patterns-openSUSE-devel_basis patterns-openSUSE-xfce_basis \
-     man libxml2-devel libxml2 libxslt libxslt-devel python3-devel openssl-devel dnsmasq tcpdump \
-    dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
-    tmux iw hostapd wxPython mousepad tk-devel \
-    glib2-devel qt-devel gnutls-devel libcares-devel libsmi-devel libcap-devel \
-    libGeoIP-devel libnl3-devel libpcap-devel python-qt4 python-colorama gnome-icon-theme \
-    conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
-    libnghttp2-devel libcap-progs NetworkManager-gnome lightdm dhcp-server xclip
+    net-tools-deprecated xclip; then
+      echo Modern OpenSUSE detected
+    else
+      echo Older OpenSUSE detected
+      sudo zypper -n install patterns-openSUSE-devel_basis patterns-openSUSE-xfce_basis \
+      man libxml2-devel libxml2 libxslt libxslt-devel python3-devel openssl-devel dnsmasq tcpdump \
+      dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
+      tmux iw hostapd wxPython mousepad tk-devel \
+      glib2-devel qt-devel gnutls-devel libcares-devel libsmi-devel libcap-devel \
+      libGeoIP-devel libnl3-devel libpcap-devel python-qt4 python-colorama gnome-icon-theme \
+      conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
+      libnghttp2-devel libcap-progs NetworkManager-gnome lightdm dhcp-server xclip
+    fi
 elif [ ! -z "$yum" ]; then
     # yum is present. EL7 and Fedora.
     sudo yum -y install gcc libxml2 libxml2-devel libxslt libxslt-devel \

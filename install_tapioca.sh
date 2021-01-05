@@ -478,6 +478,9 @@ if [ ! -z "$miniconda_python" ]; then
 else
     # system-wide installed python
     sudo $mypip install colorama mitmproxy pyshark GitPython
+    if [ -n "$pyqt5" ]; then
+      sudo $mypip install PyQt5
+    fi
 fi
 
 # Enable services on boot

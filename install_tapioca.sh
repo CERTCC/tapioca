@@ -176,7 +176,7 @@ if [ ! -z "$yum" ]; then
     sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Development Libraries"
 fi
 
-if [ ! -z "$zypper" ] && [ ! -z "$apt" ]; then
+if [ ! -z "$zypper" ]; then
     # Try packages for modern OpenSUSE
     if sudo zypper -n install patterns-devel-base-devel_basis patterns-xfce-xfce_basis \
      man libxml2-devel libxml2 libxslt libxslt-devel python3-devel libopenssl-devel dnsmasq tcpdump \

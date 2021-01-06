@@ -28,7 +28,6 @@
 
 
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QInputDialog
-from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
 
@@ -38,7 +37,6 @@ msgBox = QMessageBox()
 
 def YesNo(question='', caption='Tapioca'):
     msgBox.setIcon(QMessageBox.Question)
-    msgBox.setIconPixmap('cert.ico')
     msgBox.setText(message)
     msgBox.setWindowTitle(caption)
     msgBox.setStandardButtons(QMessageBox.Yes, QMessageBox.No)
@@ -51,7 +49,6 @@ def YesNo(question='', caption='Tapioca'):
 
 def Info(message='', caption='Tapioca'):
     msgBox.setIcon(QMessageBox.Information)
-    msgBox.setIconPixmap('cert.ico')
     msgBox.setText(message)
     msgBox.setWindowTitle(caption)
     msgBox.setStandardButtons(QMessageBox.Ok)
@@ -60,7 +57,6 @@ def Info(message='', caption='Tapioca'):
 
 def Warn(message='', caption='Warning!'):
     msgBox.setIcon(QMessageBox.Warning)
-    msgBox.setIconPixmap('cert.ico')
     msgBox.setText(message)
     msgBox.setWindowTitle(caption)
     msgBox.setStandardButtons(QMessageBox.Ok)

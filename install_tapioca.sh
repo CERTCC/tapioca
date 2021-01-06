@@ -579,14 +579,6 @@ else
     mkdir -p ~/.config
 fi
 
-if [ -n "$pyqt5" ]; then
-  explicitpython=`grep 'Exec=python3.7' config/xfce4/panel/launcher-12/14894329291.desktop`
-  if [ -z "$explicitpython" ]; then
-    # Explicitly launch the tapioca gui python3, to use pip-installed PyQt5
-    sed -i.bak -e "s/Exec=/Exec=python3.7 /" config/xfce4/panel/launcher-12/14894329291.desktop
-  fi
-fi
-
 if [ -n "$pyqt5" ] && [ -n "$apt" ]; then
   # Prevent stray terminal on Ubuntu 20.04
   sed -i.bak -e "s/Terminal=true/Terminal=false/" config/xfce4/panel/launcher-19/14849278144.desktop

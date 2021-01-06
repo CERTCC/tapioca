@@ -345,12 +345,12 @@ if [ ! -f ~/miniconda/bin/python3.7 ]; then
     # install miniconda
     if [ "$arch" == "x86_64" ]; then
         echo "Installing x86_64 miniconda..."
-        curl https://repo.continuum.io/miniconda/Miniconda-3.7.3-Linux-x86_64.sh -o miniconda.sh -L
+        curl https://repo.continuum.io/miniconda/Miniconda3-3.7.3-Linux-x86_64.sh -o miniconda.sh -L
         bash ./miniconda.sh -f -b -p $HOME/miniconda
         miniconda_python=1
     elif [ "$arch" == "x86" ]; then
         echo "Installing x86 miniconda..."
-        curl https://repo.continuum.io/miniconda/Miniconda-3.7.3-Linux-x86.sh -o miniconda.sh -L
+        curl https://repo.continuum.io/miniconda/Miniconda3-3.7.3-Linux-x86.sh -o miniconda.sh -L
         bash ./miniconda.sh -f -b -p $HOME/miniconda
         miniconda_python=1
     fi

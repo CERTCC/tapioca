@@ -485,7 +485,7 @@ fi
 # Fedora (and others?) don't have qmake.  But rather qmake-qt5
 # PyQt5 won't build without "qmake"
 if [ -n "$pyqt5" ]; then
-  if [ ! -f /usr/bin/qmake] && [ -f /usr/bin/qmake-qt5 ]; then
+  if [ ! -f /usr/bin/qmake ] && [ -f /usr/bin/qmake-qt5 ]; then
     echo Creating symlink to /usr/bin/qmake...
     sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
   fi

@@ -481,6 +481,16 @@ if [ -z "$mypip" ]; then
     exit 1
 fi
 
+# Fedora (and others?) don't have qmake.  But rather qmake-qt5
+# PyQt5 won't build without "qmake"
+if [ -n "$pyqt5" ]; then
+  if [ ! -f /usr/bin/qmake] && [ -f /usr/bin/qmake-qt5 ]; then
+    echo Creating symlink for /usr/bin/qmake...
+    sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
+  fi
+
+fi
+
 # Install mitmproxy pyshark and deps into miniconda installation
 if [ ! -z "$miniconda_python" ]; then
     # We have miniconda, so leverage that for what we can

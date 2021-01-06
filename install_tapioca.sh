@@ -354,7 +354,7 @@ if [ -z "$miniconda_python" ]; then
         pushd ~/in
         rm -f Python-3.7.9.tgz
         rm -rf Python-3.7.9
-        wget https://www.python.org/ftp/python/3.7.4/Python-3.7.9.tgz
+        wget https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz
         tar xavf Python-3.7.9.tgz
         pushd Python-3.7.9/
         ./configure --prefix=/usr/local && sudo make altinstall

@@ -202,6 +202,7 @@ if [ ! -z "$zypper" ]; then
 elif [ ! -z "$yum" ]; then
     # yum is present. EL7 and Fedora.
     sudo yum -y install wxPython
+    sudo yum -y install libsq3-devel
     sudo yum -y install gcc libxml2 libxml2-devel libxslt libxslt-devel \
     python-devel openssl-devel dnsmasq tcpdump \
     dhcp bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \
@@ -223,6 +224,7 @@ elif [ ! -z "$yum" ]; then
 
 elif [ ! -z "$apt" ]; then
     #apt-get is present.  So Debian or ubuntu
+    sudo apt-get -y update
     if DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium; then
       echo Debian-like OS detected
       # Fix Chromium icon
@@ -231,7 +233,7 @@ elif [ ! -z "$apt" ]; then
       DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium-browser
       echo Ubuntu-like OS detected
     fi
-    sudo apt-get -y update
+    DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y libsqlite3-dev
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install xfce4 xfce4-goodies build-essential libxml2-dev \
     libxslt1-dev python-dev libssl-dev dnsmasq tcpdump isc-dhcp-server \
     telnet nano xdotool tmux iptables iw nmap xterm \

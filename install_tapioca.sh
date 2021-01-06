@@ -527,15 +527,15 @@ fi
 # Enable services on boot
 if [ ! -z "$zypper" ]; then
     sudo systemctl set-default graphical.target
-    sudo chkconfig NetworkManager on
+    sudo systemctl enable NetworkManager
     sudo systemctl enable dnsmasq
     sudo systemctl enable dhcpd
 elif [ ! -z "$yum" ]; then
     sudo systemctl disable libvirtd
-    sudo chkconfig dnsmasq on
-    sudo chkconfig dhcpd on
-    sudo chkconfig firewalld off
-    sudo chkconfig iptables on
+    sudo systemctl enable dnsmasq
+    sudo systemctl enable dhcpd
+    sudo systemctl disable firewalld
+    sudo systemctl enable iptables
 elif [ ! -z "$apt" ]; then
     sudo update-rc.d dnsmasq enable
     sudo update-rc.d isc-dhcp-server enable

@@ -206,7 +206,7 @@ elif [ ! -z "$yum" ]; then
     dhcp bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \
     tmux iptables-services iw hostapd wxPython mousepad tk-devel \
     glib2-devel qt-devel gnutls-devel c-ares-devel libsmi-devel libcap-devel \
-    GeoIP-devel libnl3-devel libpcap-devel PyQt4 gnome-icon-theme.noarch \
+    GeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme.noarch \
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel xclip
     sudo yum -y install python-colorama
@@ -214,13 +214,26 @@ elif [ ! -z "$yum" ]; then
       echo "python-colorama not found. Installing via pip..."
       sudo pip2 install colorama
     fi
+    sudo yum -y install PyQt4
+    if [ $? -ne 0 ]; then
+        echo "No PyQt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
+        pyqt5=1
+    fi
 
 elif [ ! -z "$apt" ]; then
-    #apt-get is present.  So probably Ubuntu
+    #apt-get is present.  So Debian or ubuntu
+    if DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium; then
+      echo Debian-like OS detected
+      # Fix Chromium icon
+      sed -i.bak -e 's/^Icon=chromium-browser/Icon=chromium/' config/xfce4/panel/launcher-11/14849268213.desktop
+    else
+      DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium-browser
+      echo Ubuntu-like OS detected
+    fi
     sudo apt-get -y update
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install xfce4 xfce4-goodies build-essential libxml2-dev \
     libxslt1-dev python-dev libssl-dev dnsmasq tcpdump isc-dhcp-server \
-    chromium-browser telnet nano xdotool tmux iptables iw nmap xterm \
+    telnet nano xdotool tmux iptables iw nmap xterm \
     libglib2.0-dev libc-ares-dev libsmi2-dev \
     libcap-dev libgeoip-dev libnl-3-dev libpcap-dev \
     python3-pip \

@@ -485,7 +485,7 @@ fi
 # PyQt5 won't build without "qmake"
 if [ -n "$pyqt5" ]; then
   if [ ! -f /usr/bin/qmake] && [ -f /usr/bin/qmake-qt5 ]; then
-    echo Creating symlink for /usr/bin/qmake...
+    echo Creating symlink to /usr/bin/qmake...
     sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
   fi
 

@@ -474,7 +474,7 @@ sudo setcap cap_net_raw,cap_net_admin+ep `which dumpcap 2> /dev/null`
 if [ -z "$miniconda_python" ]; then
     # No miniconda (e.g. Raspberry Pi), so standard Python install
     mypip=`which pip3.7 2> /dev/null`
-    if [ -z "mypip" ]; then
+    if [ -z "$mypip" ]; then
       # The detected python 3.7 was not one we compiled/installed
       # There's probably not a "pip3.7" binary
       echo Using already-installed python 3.7

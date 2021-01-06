@@ -162,7 +162,7 @@ if [ -z "$path_set" ]; then
     cp .bash_profile.tmp ~/.bash_profile
 fi
 
-if [ ! -z "$dnf" ] && [ "$VERSION" == "Fedora" ]; then
+if [ ! -z "$dnf" ] && ([ "$VERSION" == "Fedora" ] || [ "$NAME" == "Fedora" ]); then
     # dnf is present. So probably Fedora
     sudo dnf -y group install "Fedora Workstation"
     sudo dnf -y group install xfce "Development tools" "Development Libraries"

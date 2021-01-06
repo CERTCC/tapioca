@@ -482,6 +482,7 @@ if [ -z "$miniconda_python" ]; then
       if [[ "$pipver" != *"3.7"* ]]; then
         echo pip for python 3.7 not found!
         unset $mypip
+      fi
     fi
     echo "Using systemwide pip: $mypip"
 else

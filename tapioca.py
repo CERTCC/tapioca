@@ -34,7 +34,7 @@ import os
 uid = os.getuid()
 iceauthority = '/run/user/%s/ICEauthority' % uid
 if os.path.exists(iceauthority):
-    print('%s exists.  Removing...')
+    print('%s exists.  Removing...' % iceauthority)
     os.remove(iceauthority)
 
 import sys

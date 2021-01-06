@@ -472,7 +472,7 @@ if [ -z "$miniconda_python" ]; then
     echo "Using systemwide pip: $mypip"
 else
     # miniconda python
-    mypip=`which pip3.7 2> /dev/null`
+    mypip=`which pip3 2> /dev/null`
     echo "Using miniconda pip: $mypip"
 fi
 

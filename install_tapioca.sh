@@ -344,12 +344,12 @@ if [ ! -f ~/miniconda/bin/python3.7 ]; then
     # install miniconda
     if [ "$arch" == "x86_64" ]; then
         echo "Installing x86_64 miniconda..."
-        curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh -L
+        curl https://repo.continuum.io/miniconda/Miniconda-3.7.3-Linux-x86_64.sh -o miniconda.sh -L
         bash ./miniconda.sh -f -b -p $HOME/miniconda
         miniconda_python=1
     elif [ "$arch" == "x86" ]; then
         echo "Installing x86 miniconda..."
-        curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh -o miniconda.sh -L
+        curl https://repo.continuum.io/miniconda/Miniconda-3.7.3-Linux-x86.sh -o miniconda.sh -L
         bash ./miniconda.sh -f -b -p $HOME/miniconda
         miniconda_python=1
     fi
@@ -468,11 +468,11 @@ sudo setcap cap_net_raw,cap_net_admin+ep `which dumpcap 2> /dev/null`
 # Confirm pip is there
 if [ -z "$miniconda_python" ]; then
     # No miniconda (e.g. Raspberry Pi), so standard Python install
-    mypip=`which pip3 2> /dev/null`
+    mypip=`which pip3.7 2> /dev/null`
     echo "Using systemwide pip: $mypip"
 else
     # miniconda python
-    mypip=`which pip 2> /dev/null`
+    mypip=`which pip3.7 2> /dev/null`
     echo "Using miniconda pip: $mypip"
 fi
 
@@ -553,10 +553,10 @@ else
 fi
 
 if [ -n "$pyqt5" ]; then
-  explicitpython=`grep 'Exec=python3' config/xfce4/panel/launcher-12/14894329291.desktop`
+  explicitpython=`grep 'Exec=python3.7' config/xfce4/panel/launcher-12/14894329291.desktop`
   if [ -z "$explicitpython" ]; then
     # Explicitly launch the tapioca gui python3, to use pip-installed PyQt5
-    sed -i.bak -e "s/Exec=/Exec=python3 /" config/xfce4/panel/launcher-12/14894329291.desktop
+    sed -i.bak -e "s/Exec=/Exec=python3.7 /" config/xfce4/panel/launcher-12/14894329291.desktop
   fi
 fi
 
@@ -651,6 +651,7 @@ if [ ! -z "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then
     sudo dnf group install xfce
 fi
 
+# Note that this will only work if installer is being run from within X11
 echo "Setting default icon set to gnome..."
 xfconf-query -c xsettings -p /Net/IconThemeName -s "gnome"
 

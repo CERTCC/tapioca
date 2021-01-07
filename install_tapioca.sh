@@ -174,6 +174,10 @@ if [ ! -z "$yum" ]; then
     sudo yum makecache fast
     sudo yum -y install epel-release
     sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Development Libraries"
+    if [ $? -ne 0 ]; then
+      # Yes, let's just keep renaming packages.  Why should this be easy?
+      sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Additional Development"
+    fi
 fi
 
 if [ ! -z "$zypper" ]; then

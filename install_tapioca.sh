@@ -258,6 +258,9 @@ fi
 
 if [ "$arch" == "x86_64" ] || [ "$arch" == "x86_64" ]; then
   echo We will be able to use miniconda here...
+  # If we are using miniconda for our universal python version,
+  # we need to install PyQt5 via miniconda.
+  pyqt5=1
 else
   echo Miniconda is not available on $arch
   # We're going to have to get our own PyQt5 with pip
@@ -360,14 +363,19 @@ if [ ! -f ~/miniconda/bin/python3.7 ]; then
     # install miniconda
     if [ "$arch" == "x86_64" ]; then
         echo "Installing x86_64 miniconda..."
-        curl https://repo.continuum.io/miniconda/Miniconda3-4.5.12-Linux-x86_64.sh -o miniconda.sh -L
+        curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh -L
         bash ./miniconda.sh -f -b -p $HOME/miniconda
         miniconda_python=1
     elif [ "$arch" == "x86" ]; then
         echo "Installing x86 miniconda..."
-        curl https://repo.continuum.io/miniconda/Miniconda3-4.5.12-Linux-x86.sh -o miniconda.sh -L
+        curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh -o miniconda.sh -L
         bash ./miniconda.sh -f -b -p $HOME/miniconda
         miniconda_python=1
+    fi
+    if [ -f ~/miniconda/bin/python3 ]; then
+      # We don't have a python3.7 to run.
+      # Miniconda is a moving target, and I don't like this.  But YOLO.
+      ln -s ~/miniconda/bin/python3 ~/miniconda/bin/python3.7
     fi
 else
     # Miniconda already installed

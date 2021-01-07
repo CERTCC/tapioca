@@ -324,7 +324,7 @@ else
     # Set x-session-manager alternative (Raspberry Pi)
     sudo update-alternatives --set x-session-manager /usr/bin/xfce4-session
     # This file still may not exist if we've never booted with gdm3
-    if [ -f /var/lib/AccountsService ]; then
+    if [ -d /var/lib/AccountsService ]; then
       if sudo [ ! -f /var/lib/AccountsService/users/tapioca ]; then
         sudo bash -c 'echo "[User]" > /var/lib/AccountsService/users/tapioca'
         sudo bash -c 'echo "  XSession=xfce" >> /var/lib/AccountsService/users/tapioca'

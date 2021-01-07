@@ -629,6 +629,7 @@ if [ -f ~/.xinitrc ]; then
     cp ~/.xinitrc ~/.xinitrc.orig
 fi
 echo "sudo service dnsmasq restart" > ~/.xinitrc
+echo "sudo service dhcpd restart" >> ~/.xinitrc
 echo "exec /usr/bin/xfce4-session" >> ~/.xinitrc
 
 startx=`grep startx ~/.bash_profile`

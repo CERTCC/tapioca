@@ -268,7 +268,7 @@ else
 fi
 
 if [ ! -z "$zypper" ]; then
-    sudo zypper install chromium
+    sudo zypper -n install chromium
 fi
 
 python=`which python  2> /dev/null`

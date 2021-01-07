@@ -256,12 +256,15 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-if [ "$arch" == "x86_64" ] || if [ "$arch" == "x86_64" ]; then
+if [ "$arch" == "x86_64" ] || [ "$arch" == "x86_64" ]; then
   echo We will be able to use miniconda here...
 else
   echo Miniconda is not available on $arch
   # We're going to have to get our own PyQt5 with pip
-  pyqt5=1
+  # Start with just OpenSUSE for now...
+  if [ ! -z "$zypper" ]; then
+    pyqt5=1
+  fi
 fi
 
 if [ ! -z "$zypper" ]; then

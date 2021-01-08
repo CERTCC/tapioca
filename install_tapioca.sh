@@ -179,9 +179,10 @@ if [ ! -z "$yum" ]; then
     sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Development Libraries"
     if [ $? -ne 0 ]; then
       # Centos 8 has moved some stuff around
+      sudo yum -y groupinstall "Development tools" "Server with GUI" xfce
       if [ -f /etc/yum.repos.d/CentOS-PowerTools.repo ]; then
           sudo sed -i.bak -e 's/^enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-PowerTools.repo
-          sudo yum -y install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel python3 make
+          sudo yum -y install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel
       fi
     fi
 fi

@@ -239,7 +239,7 @@ elif [ ! -z "$apt" ]; then
       DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium-browser
       echo Ubuntu-like OS detected
     fi
-    DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y libsqlite3-dev
+    DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libsqlite3-dev
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install xfce4 xfce4-goodies build-essential libxml2-dev \
     libxslt1-dev python-dev libssl-dev dnsmasq tcpdump isc-dhcp-server \
     telnet nano xdotool tmux iptables iw nmap xterm \

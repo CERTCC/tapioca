@@ -184,6 +184,10 @@ if [ ! -z "$yum" ]; then
           sudo sed -i.bak -e 's/^enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-PowerTools.repo
       fi
       sudo yum -y install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel
+      if [ $? -ne 0 ]; then
+        echo We probably have CentOS Stream here.  Installing from PowerTools...
+        sudo dnf --enablerepo=powertools install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel
+      fi
     fi
 fi
 

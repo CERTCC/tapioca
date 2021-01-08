@@ -219,7 +219,9 @@ elif [ ! -z "$yum" ]; then
     # yum is present. EL7 and Fedora.
     sudo yum -y install wxPython
     sudo yum -y install libsq3-devel
-    sudo yum -y dhcp python-devel qt-devel libsmi-devel gnome-icon-theme.noarch
+    sudo yum -y install dhcp
+    sudo yum -y install libsmi-devel
+    sudo yum -y install gnome-icon-theme.noarch
     sudo yum -y install gcc libxml2 libxml2-devel libxslt libxslt-devel \
     openssl-devel dnsmasq tcpdump \
     bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \

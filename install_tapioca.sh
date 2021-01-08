@@ -282,13 +282,6 @@ if [ ! -z "$zypper" ]; then
     sudo zypper -n install chromium
 fi
 
-python=`which python  2> /dev/null`
-
-# Tapioca scripts that use the GUI will use system-wide python
-if [ ! -f /usr/bin/python ]; then
-    ln -s $python /usr/bin/python
-fi
-
 if [ ! -z "$yum" ]; then
     # If already installed, these packages can interfere with our Wireshark
     sudo yum remove -y pyOpenSSL wireshark 2> /dev/null
@@ -431,6 +424,7 @@ if [ -z "$miniconda_python" ]; then
         # https://bugs.python.org/issue34058
         sudo ln -s /usr/local/lib64/python3.7/lib-dynload/ /usr/local/lib/python3.7/lib-dynload
       fi
+    fi
 
 else
     # miniconda python install

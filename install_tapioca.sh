@@ -300,8 +300,6 @@ if [ ! -z "$apt" ]; then
     sudo apt-get -y install gnome-icon-theme-full
     sudo apt-get -y install libgnutls-dev
     sudo apt-get -y install libgnutls28-dev
-    sudo apt-get -y install python-wxgtk2.8
-    sudo apt-get -y install python-wxgtk3.0
     sudo apt-get -y install libffi-dev
     sudo apt-get -y install network-manager-gnome
     sudo apt-get -y install net-tools

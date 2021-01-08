@@ -541,14 +541,21 @@ if [ -z "$mypip" ]; then
     exit 1
 fi
 
-# Fedora (and others?) don't have qmake.  But rather qmake-qt5
-# PyQt5 won't build without "qmake"
 if [ -n "$pyqt5" ]; then
   if [ ! -f /usr/bin/qmake ] && [ -f /usr/bin/qmake-qt5 ]; then
+    # Fedora (and others?) don't have qmake.  But rather qmake-qt5
+    # PyQt5 won't build without "qmake"
     echo Creating symlink to /usr/bin/qmake...
     sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
   fi
-
+  if [ -f /usr/bin/qmake ] && [ -f /usr/bin/qmake-qt5 ]; then
+    # OpenSUSE has qmake (for Qt4) and qmake-qt5
+    # PyQt5 won't build with Qt4's qmake
+    echo Backing up original /usr/bin/qmake...
+    sudo mv /usr/bin/qmake /usr/bin/qmake.orig
+    echo Creating symlink to /usr/bin/qmake...
+    sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
+  fi
 fi
 
 # Install mitmproxy pyshark and deps into miniconda installation

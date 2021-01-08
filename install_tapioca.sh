@@ -385,6 +385,19 @@ else
         # Miniconda is a moving target, and I don't like this.  But YOLO.
         ln -s ~/miniconda/bin/python3 ~/miniconda/bin/python3.7
       fi
+      if [ -d /etc/ld.so.conf.d ]; then
+        # PyQt5 will require that libxcb-util.so.1 exists.
+        # But it may not be there, like on Debian.  Fun!
+        for path in $(grep -h /lib /etc/ld.so.conf.d/*.conf)
+        do
+          if [ ! -f $path/libxcb-util.so.1 ] && [ -f $path/libxcb-util.so.0 ]; then
+            echo $path/libxcb-util.so.1 does not exist!
+            echo Symlinking $path/libxcb-util.so.0 to it...
+            sudo ln -s $path/libxcb-util.so.0 $path/libxcb-util.so.1
+          fi
+        done
+
+      fi
   else
       # Miniconda already installed
       miniconda_python=1

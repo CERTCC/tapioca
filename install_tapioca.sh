@@ -174,12 +174,14 @@ fi
 
 if [ ! -z "$yum" ]; then
     #EL and not Fedora
-    sudo yum makecache fast
+    sudo yum makecache
     sudo yum -y install epel-release
     sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Development Libraries"
     if [ $? -ne 0 ]; then
-      # Yes, let's just keep renaming packages.  Why should this be easy?
-      sudo yum -y groupinstall "Development tools" "Server with GUI" xfce "Additional Development"
+      # Centos 8 has moved some stuff around
+      if [ -f /etc/yum.repos.d/CentOS-PowerTools.repo ]; then
+          sudo sed -i.bak -e 's/^enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-PowerTools.repo
+      fi
     fi
 fi
 

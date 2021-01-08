@@ -220,7 +220,7 @@ elif [ ! -z "$yum" ]; then
     bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \
     tmux iptables-services iw hostapd mousepad tk-devel \
     glib2-devel gnutls-devel c-ares-devel libcap-devel \
-    GeoIP-devel libnl3-devel libpcap-devel \
+    GeoIP-devel libnl3-devel libpcap-devel libffi-devel \
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel xclip
     sudo yum -y install PyQt4

@@ -264,7 +264,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-if [ "$arch" == "x86_64" ] || [ "$arch" == "x86_64" ]; then
+if [ "$arch" == "x86_64" ] || [ "$arch" == "i686" ] || [ "$arch" == "i386" ] || [ "$arch" == "x86" ]; then
   echo We will be able to use miniconda here...
   # If we are using miniconda for our universal python version,
   # we need to install PyQt5 via miniconda.
@@ -375,7 +375,7 @@ else
           curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh -L
           bash ./miniconda.sh -f -b -p $HOME/miniconda
           miniconda_python=1
-      elif [ "$arch" == "x86" ]; then
+      elif || [ "$arch" == "i686" ] || [ "$arch" == "i386" ] || [ "$arch" == "x86" ]; then
           echo "Installing x86 miniconda..."
           curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh -o miniconda.sh -L
           bash ./miniconda.sh -f -b -p $HOME/miniconda

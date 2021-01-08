@@ -195,7 +195,7 @@ if [ ! -z "$zypper" ]; then
     glib2-devel libqt4-devel libgnutls-devel c-ares-devel libsmi-devel libcap-devel \
     libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
-    libnghttp2-devel libcap-progs NetworkManager-applet lightdm dhcp-server \
+    libnghttp2-devel libcap-progs NetworkManager-applet gdm dhcp-server \
     net-tools-deprecated xclip; then
       echo Modern OpenSUSE detected
       sudo zypper -n install python3-colorama
@@ -208,7 +208,7 @@ if [ ! -z "$zypper" ]; then
       glib2-devel qt-devel gnutls-devel libcares-devel libsmi-devel libcap-devel \
       libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
       conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
-      libnghttp2-devel libcap-progs NetworkManager-gnome lightdm dhcp-server xclip
+      libnghttp2-devel libcap-progs NetworkManager-gnome gdm dhcp-server xclip
     fi
 elif [ ! -z "$yum" ]; then
     # yum is present. EL7 and Fedora.
@@ -362,8 +362,8 @@ if [ -f /etc/lightdm/lightdm.conf ]; then
     sudo sed -i.bak -e 's/autologin-user=.*/autologin-user=tapioca/' /etc/lightdm/lightdm.conf
 fi
 
-if [ "$VERSION" == "Fedora" ] || [ "$NAME" == "Fedora" ]; then
-  echo "We won't attempt to use miniconda on Fedora"
+if ([ "$VERSION" == "Fedora" ] || [ "$NAME" == "Fedora" ]) || ([ "$NAME" == "CentOS Linux"] && [ "VERSION_ID" == "8"]); then
+  echo "We won't attempt to use miniconda on Fedora or CENTOS 8"
   # https://bugzilla.redhat.com/show_bug.cgi?id=1829790
 else
   # Check if the miniconda python3.7 binary exists

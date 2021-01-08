@@ -419,7 +419,7 @@ if [ -z "$miniconda_python" ]; then
     fi
 
     if [ ! -z "$zypper" ]; then
-      if [ -f /usr/local/lib64/python3.7/lib-dynload/ ]; then
+      if [ -d /usr/local/lib64/python3.7/lib-dynload/ ]; then
         echo "Fixing OpenSUSE bug with python outside of /usr/local"
         # https://bugs.python.org/issue34058
         sudo ln -s /usr/local/lib64/python3.7/lib-dynload/ /usr/local/lib/python3.7/lib-dynload

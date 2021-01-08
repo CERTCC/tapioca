@@ -708,8 +708,22 @@ fi
 if [ ! -z "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then
     # Fedora can be silly.  It can have xfce installed, but not present.
     # In such a case, remove it and reinstall it.
-    sudo dnf group remove xfce
-    sudo dnf group install xfce
+    sudo dnf -y group remove xfce
+    sudo dnf -y group install xfce
+fi
+
+# Some distros (e.g. Fedora) may configure dnsmasq to only listen on loopback
+if [ -f /etc/dnsmasq.conf ]; then
+  loopback_dnsmasq=`egrep "^interface=lo" /etc/dnsmasq.conf`
+  if [ ! -z "$loopback_dnsmasq" ]; then
+    echo Unsetting dnsmasq directive to only bind to loopback...
+    sudo sed -i.bak -e "s/^interface=lo/#interface=lo/" /etc/dnsmasq.conf
+  fi
+  bind_interfaces=`egrep "^bind-interfaces" /etc/dnsmasq.conf`
+  if [ ! -z "$bind_interfaces" ]; then
+    echo Unsetting dnsmasq bind-interfaces directive...
+    sudo sed -i.bak -e "s/^bind-interfaces/#bind-interfaces/" /etc/dnsmasq.conf
+  fi
 fi
 
 # Note that this will only work if installer is being run from within X11

@@ -34,7 +34,7 @@ try:
     import wx
     import dialogs
 except ImportError:
-    import qt5dialogs as dialogs
+    import qtdialogs as dialogs
 
 
 def main():

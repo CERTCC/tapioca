@@ -214,12 +214,13 @@ elif [ ! -z "$yum" ]; then
     # yum is present. EL7 and Fedora.
     sudo yum -y install wxPython
     sudo yum -y install libsq3-devel
+    sudo yum -y dhcp python-devel qt-devel libsmi-devel gnome-icon-theme.noarch
     sudo yum -y install gcc libxml2 libxml2-devel libxslt libxslt-devel \
-    python-devel openssl-devel dnsmasq tcpdump \
-    dhcp bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \
+    openssl-devel dnsmasq tcpdump \
+    bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \
     tmux iptables-services iw hostapd mousepad tk-devel \
-    glib2-devel qt-devel gnutls-devel c-ares-devel libsmi-devel libcap-devel \
-    GeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme.noarch \
+    glib2-devel gnutls-devel c-ares-devel libcap-devel \
+    GeoIP-devel libnl3-devel libpcap-devel \
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel xclip
     sudo yum -y install PyQt4

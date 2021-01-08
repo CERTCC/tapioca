@@ -375,7 +375,7 @@ else
           curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh -L
           bash ./miniconda.sh -f -b -p $HOME/miniconda
           miniconda_python=1
-      elif || [ "$arch" == "i686" ] || [ "$arch" == "i386" ] || [ "$arch" == "x86" ]; then
+      elif [ "$arch" == "i686" ] || [ "$arch" == "i386" ] || [ "$arch" == "x86" ]; then
           echo "Installing x86 miniconda..."
           curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh -o miniconda.sh -L
           bash ./miniconda.sh -f -b -p $HOME/miniconda

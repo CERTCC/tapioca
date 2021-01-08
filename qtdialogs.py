@@ -27,7 +27,7 @@
 # END LICENSE #
 try:
     from PyQt4.QtGui import QApplication, QWidget, QPushButton, QMessageBox, QInputDialog
-    from PyQt5.QtCore import pyqtSlot
+    from PyQt4.QtCore import pyqtSlot
 except ImportError:
     from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QInputDialog
     from PyQt5.QtCore import pyqtSlot

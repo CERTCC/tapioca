@@ -188,13 +188,14 @@ if [ ! -z "$zypper" ]; then
     if sudo zypper -n install patterns-devel-base-devel_basis patterns-xfce-xfce_basis \
      man libxml2-devel libxml2 libxslt libxslt-devel python3-devel libopenssl-devel dnsmasq tcpdump \
     dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
-    tmux iw hostapd python-wxWidgets-3_0 mousepad tk-devel \
+    tmux iw hostapd mousepad tk-devel \
     glib2-devel libqt4-devel libgnutls-devel c-ares-devel libsmi-devel libcap-devel \
-    libGeoIP-devel libnl3-devel libpcap-devel python2-qt4 python2-colorama gnome-icon-theme \
+    libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
     libnghttp2-devel libcap-progs NetworkManager-applet lightdm dhcp-server \
     net-tools-deprecated xclip; then
       echo Modern OpenSUSE detected
+      sudo zypper -n install python3-colorama
     else
       echo Older OpenSUSE detected
       sudo zypper -n install patterns-openSUSE-devel_basis patterns-openSUSE-xfce_basis \
@@ -202,7 +203,7 @@ if [ ! -z "$zypper" ]; then
       dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
       tmux iw hostapd wxPython mousepad tk-devel \
       glib2-devel qt-devel gnutls-devel libcares-devel libsmi-devel libcap-devel \
-      libGeoIP-devel libnl3-devel libpcap-devel python-qt4 python-colorama gnome-icon-theme \
+      libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
       conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
       libnghttp2-devel libcap-progs NetworkManager-gnome lightdm dhcp-server xclip
     fi
@@ -218,11 +219,6 @@ elif [ ! -z "$yum" ]; then
     GeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme.noarch \
     conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
     libgcrypt-devel xclip
-    sudo yum -y install python-colorama
-    if [ $? -ne 0 ]; then
-      echo "python-colorama not found. Installing via pip..."
-      sudo pip2 install colorama
-    fi
     sudo yum -y install PyQt4
     if [ $? -ne 0 ]; then
         echo "No PyQt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
@@ -251,7 +247,7 @@ elif [ ! -z "$apt" ]; then
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
     libsnappy-dev libgcrypt-dev ifupdown xclip
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libqt4-dev \
-    python-qt4 python3-pyqt4 python-colorama
+    python3-pyqt4 python3-colorama
     if [ $? -ne 0 ]; then
         echo "No PyQt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
         pyqt5=1

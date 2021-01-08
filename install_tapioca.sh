@@ -222,13 +222,20 @@ elif [ ! -z "$yum" ]; then
     sudo yum -y install dhcp
     sudo yum -y install libsmi-devel
     sudo yum -y install gnome-icon-theme.noarch
+    sudo yum -y install snappy-devel
+    sudo yum -y install csnappy-devel
+    sudo yum -y install libnghttp2-devel
+    if [ $? -ne 0 ]; then
+      echo We probably have CentOS Stream here.  Installing from PowerTools...
+      sudo dnf -y --enablerepo=powertools install libnghttp2-devel
+    fi
     sudo yum -y install gcc libxml2 libxml2-devel libxslt libxslt-devel \
     openssl-devel dnsmasq tcpdump \
     bind-utils nano chromium wget net-tools telnet xdotool nmap xterm \
     tmux iptables-services iw hostapd mousepad tk-devel \
     glib2-devel gnutls-devel c-ares-devel libcap-devel \
     GeoIP-devel libnl3-devel libpcap-devel libffi-devel \
-    conntrack-tools qt5-qtbase-devel qt5-linguist snappy-devel libnghttp2-devel \
+    conntrack-tools qt5-qtbase-devel qt5-linguist \
     libgcrypt-devel xclip
     sudo yum -y install PyQt4
     if [ $? -ne 0 ]; then

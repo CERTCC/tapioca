@@ -165,7 +165,7 @@ if [ -z "$path_set" ]; then
     cp .bash_profile.tmp ~/.bash_profile
 fi
 
-if [ ! -z "$dnf" ] && ([ "$VERSION" == "Fedora" ] || [ "$NAME" == "Fedora" ]); then
+if [ ! -z "$dnf" ] && [ "$ID" == "fedora" ]; then
     # dnf is present. So probably Fedora
     sudo dnf -y group install "Fedora Workstation"
     sudo dnf -y group install xfce "Development tools" "Development Libraries"
@@ -182,8 +182,8 @@ if [ ! -z "$yum" ]; then
       sudo yum -y groupinstall "Development tools" "Server with GUI" xfce
       if [ -f /etc/yum.repos.d/CentOS-PowerTools.repo ]; then
           sudo sed -i.bak -e 's/^enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-PowerTools.repo
-          sudo yum -y install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel
       fi
+      sudo yum -y install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel
     fi
 fi
 
@@ -363,7 +363,7 @@ if [ -f /etc/lightdm/lightdm.conf ]; then
     sudo sed -i.bak -e 's/autologin-user=.*/autologin-user=tapioca/' /etc/lightdm/lightdm.conf
 fi
 
-if ([ "$VERSION" == "Fedora" ] || [ "$NAME" == "Fedora" ]) || ([ "$NAME" == "CentOS Linux" ] && [ "$VERSION_ID" == "8" ]); then
+if [ "$ID" == "fedora" ] || ([ "$ID" == "centos" ] && [ "$VERSION_ID" == "8" ]); then
   echo "We won't attempt to use miniconda on Fedora or CENTOS 8"
   # https://bugzilla.redhat.com/show_bug.cgi?id=1829790
 else

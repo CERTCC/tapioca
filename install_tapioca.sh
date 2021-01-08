@@ -715,16 +715,15 @@ if [ ! -z "$apt" ]; then
         sudo netplan apply
         sudo service network-manager restart
     fi
+fi
 
-    if [ -e "/etc/systemd/resolved.conf" ]; then
-        # Ubuntu 18.04 uses systemd-resolve instead of dnsmasq.
-        # We need to enable udp-listening resolver.
-        udplistener=`egrep "^DNSStubListener=udp" /etc/systemd/resolved.conf`
-        if [ -z "$udplistener" ]; then
-            sudo bash -c "echo 'DNSStubListener=udp' >> /etc/systemd/resolved.conf"
-        fi
+if [ -e "/etc/systemd/resolved.conf" ]; then
+    # Ubuntu 18.04 uses systemd-resolve instead of dnsmasq.
+    # We need to enable udp-listening resolver.
+    udplistener=`egrep "^DNSStubListener=udp" /etc/systemd/resolved.conf`
+    if [ -z "$udplistener" ]; then
+        sudo bash -c "echo 'DNSStubListener=udp' >> /etc/systemd/resolved.conf"
     fi
-
 fi
 
 if [ ! -z "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then

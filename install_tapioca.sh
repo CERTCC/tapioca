@@ -362,7 +362,7 @@ if [ -f /etc/lightdm/lightdm.conf ]; then
     sudo sed -i.bak -e 's/autologin-user=.*/autologin-user=tapioca/' /etc/lightdm/lightdm.conf
 fi
 
-if ([ "$VERSION" == "Fedora" ] || [ "$NAME" == "Fedora" ]) || ([ "$NAME" == "CentOS Linux"] && [ "VERSION_ID" == "8"]); then
+if ([ "$VERSION" == "Fedora" ] || [ "$NAME" == "Fedora" ]) || ([ "$NAME" == "CentOS Linux"] && [ "VERSION_ID" == "8" ]); then
   echo "We won't attempt to use miniconda on Fedora or CENTOS 8"
   # https://bugzilla.redhat.com/show_bug.cgi?id=1829790
 else

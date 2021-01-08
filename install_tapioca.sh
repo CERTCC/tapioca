@@ -94,7 +94,10 @@ if [ -z "$tapiocasudo" ]; then
     echo "$user_id isn't part of the \"$sudogroup\" group."
     echo "Please run the following command as root and re-run $0:"
     echo "usermod -aG $sudogroup tapioca"
+    echo ""
     echo "Logging out and back in again may be required after making this change."
+    echo "If you continue to have sudo trouble, ensure that $sudogroup is enabled"
+    echo "in the /etc/sudoers file"
     exit 1
 fi
 

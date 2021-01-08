@@ -181,7 +181,7 @@ if [ ! -z "$yum" ]; then
       # Centos 8 has moved some stuff around
       if [ -f /etc/yum.repos.d/CentOS-PowerTools.repo ]; then
           sudo sed -i.bak -e 's/^enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-PowerTools.repo
-          sudo yum -y install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel
+          sudo yum -y install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel python3 make
       fi
     fi
 fi

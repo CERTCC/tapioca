@@ -197,13 +197,19 @@ if [ ! -z "$zypper" ]; then
      man libxml2-devel libxml2 libxslt libxslt-devel python3-devel libopenssl-devel dnsmasq tcpdump \
     dhcp bind-utils nano wget net-tools telnet xdotool nmap xterm \
     tmux iw hostapd mousepad tk-devel \
-    glib2-devel libqt4-devel libgnutls-devel c-ares-devel libsmi-devel libcap-devel \
-    libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
+    glib2-devel libgnutls-devel c-ares-devel libsmi-devel libcap-devel \
+    libnl3-devel libpcap-devel gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
     libnghttp2-devel libcap-progs NetworkManager-applet gdm dhcp-server \
     net-tools-deprecated xclip; then
       echo Modern OpenSUSE detected
+      sudo zypper -n install libGeoIP-devel
       sudo zypper -n install python3-colorama
+      sudo zypper -n install libqt4-devel
+      if [ $? -ne 0 ]; then
+          echo "No Qt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
+          pyqt5=1
+      fi
     else
       echo Older OpenSUSE detected
       sudo zypper -n install patterns-openSUSE-devel_basis patterns-openSUSE-xfce_basis \
@@ -214,6 +220,10 @@ if [ ! -z "$zypper" ]; then
       libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
       conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
       libnghttp2-devel libcap-progs NetworkManager-gnome gdm dhcp-server xclip
+      if [ $? -ne 0 ]; then
+        echo "Error installing dependency packages. Please check errors and try again."
+        exit 1
+      fi
     fi
 elif [ ! -z "$yum" ]; then
     # yum is present. EL7 and Fedora.
@@ -237,6 +247,10 @@ elif [ ! -z "$yum" ]; then
     GeoIP-devel libnl3-devel libpcap-devel libffi-devel \
     conntrack-tools qt5-qtbase-devel qt5-linguist \
     libgcrypt-devel xclip
+    if [ $? -ne 0 ]; then
+      echo "Error installing dependency packages. Please check errors and try again."
+      exit 1
+    fi
     sudo yum -y install PyQt4
     if [ $? -ne 0 ]; then
         echo "No PyQt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
@@ -264,17 +278,16 @@ elif [ ! -z "$apt" ]; then
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
     libsnappy-dev libgcrypt-dev ifupdown xclip
+    if [ $? -ne 0 ]; then
+      echo "Error installing dependency packages. Please check errors and try again."
+      exit 1
+    fi
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libqt4-dev \
     python3-pyqt4 python3-colorama
     if [ $? -ne 0 ]; then
         echo "No PyQt4 available. Will configure Tapioca to use PyQt5 installed via pip..."
         pyqt5=1
     fi
-fi
-
-if [ $? -ne 0 ]; then
-  echo "Error installing dependency packages. Please check errors and try again."
-  exit 1
 fi
 
 if [ "$arch" == "x86_64" ] || [ "$arch" == "i686" ] || [ "$arch" == "i386" ] || [ "$arch" == "x86" ]; then

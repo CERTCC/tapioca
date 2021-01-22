@@ -588,7 +588,13 @@ fi
 if [ ! -z "$miniconda_python" ]; then
     # We have miniconda, so leverage that for what we can
     conda install -y sortedcontainers passlib certifi pyparsing click ruamel_yaml colorama pyopenssl
-    $mypip install mitmproxy pyshark GitPython
+    $mypip install pyshark GitPython
+    $mypip install mitmproxy
+    if [ $? -ne 0 ]; then
+      echo Trouble installing mitmproxy with $mypip. Trying w/o dependencies...
+      $mypip install mitmproxy --no-dependencies
+    fi
+
     if [ -n "$pyqt5" ]; then
       $mypip install PyQt5
     fi

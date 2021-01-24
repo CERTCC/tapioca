@@ -381,230 +381,240 @@ if [ -f /etc/lightdm/lightdm.conf ]; then
     # Match found.  Replace existing autologin-user line
     sudo sed -i.bak -e 's/autologin-user=.*/autologin-user=tapioca/' /etc/lightdm/lightdm.conf
 fi
+while [ -z "$mitmproxy_ok" ]; do
+  # Not really a while loop.  Just a "goto" equivalent in case mitmproxy install
+  # fails with miniconda
+  if [ ! -z "$skip_miniconda" ] || [ "$ID" == "fedora" ] || ([ "$ID" == "centos" ] && [ "$VERSION_ID" == "8" ]); then
+    echo "We won't attempt to use miniconda on Fedora or CENTOS 8"
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1829790
+    # Also miniconda recently fails to install mitmproxy due to a conflict with
+    # ruamel-yaml.  We can't count on this being fixed.
+    unset miniconda_python
+  else
+    # Check if the miniconda python3.7 binary exists
+    if [ ! -f ~/miniconda/bin/python3.7 ]; then
+        # install miniconda
+        if [ "$arch" == "x86_64" ]; then
+            echo "Installing x86_64 miniconda..."
+            curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh -L
+            bash ./miniconda.sh -f -b -p $HOME/miniconda
+            miniconda_python=1
+        elif [ "$arch" == "i686" ] || [ "$arch" == "i386" ] || [ "$arch" == "x86" ]; then
+            echo "Installing x86 miniconda..."
+            curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh -o miniconda.sh -L
+            bash ./miniconda.sh -f -b -p $HOME/miniconda
+            miniconda_python=1
+        fi
+        if [ -f ~/miniconda/bin/python3 ]; then
+          # We don't have a python3.7 to run.
+          # Miniconda is a moving target, and I don't like this.  But YOLO.
+          ln -s ~/miniconda/bin/python3 ~/miniconda/bin/python3.7
+        fi
+        if [ -d /etc/ld.so.conf.d ]; then
+          # PyQt5 will require that libxcb-util.so.1 exists.
+          # But it may not be there, like on Debian.  Fun!
+          for path in $(grep -h /lib /etc/ld.so.conf.d/*.conf)
+          do
+            if [ ! -f $path/libxcb-util.so.1 ] && [ -f $path/libxcb-util.so.0 ]; then
+              echo $path/libxcb-util.so.1 does not exist!
+              echo Symlinking $path/libxcb-util.so.0 to it...
+              sudo ln -s $path/libxcb-util.so.0 $path/libxcb-util.so.1
+            fi
+          done
 
-if [ "$ID" == "fedora" ] || ([ "$ID" == "centos" ] && [ "$VERSION_ID" == "8" ]); then
-  echo "We won't attempt to use miniconda on Fedora or CENTOS 8"
-  # https://bugzilla.redhat.com/show_bug.cgi?id=1829790
-else
-  # Check if the miniconda python3.7 binary exists
-  if [ ! -f ~/miniconda/bin/python3.7 ]; then
-      # install miniconda
-      if [ "$arch" == "x86_64" ]; then
-          echo "Installing x86_64 miniconda..."
-          curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh -L
-          bash ./miniconda.sh -f -b -p $HOME/miniconda
-          miniconda_python=1
-      elif [ "$arch" == "i686" ] || [ "$arch" == "i386" ] || [ "$arch" == "x86" ]; then
-          echo "Installing x86 miniconda..."
-          curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh -o miniconda.sh -L
-          bash ./miniconda.sh -f -b -p $HOME/miniconda
-          miniconda_python=1
-      fi
-      if [ -f ~/miniconda/bin/python3 ]; then
-        # We don't have a python3.7 to run.
-        # Miniconda is a moving target, and I don't like this.  But YOLO.
-        ln -s ~/miniconda/bin/python3 ~/miniconda/bin/python3.7
-      fi
-      if [ -d /etc/ld.so.conf.d ]; then
-        # PyQt5 will require that libxcb-util.so.1 exists.
-        # But it may not be there, like on Debian.  Fun!
-        for path in $(grep -h /lib /etc/ld.so.conf.d/*.conf)
-        do
-          if [ ! -f $path/libxcb-util.so.1 ] && [ -f $path/libxcb-util.so.0 ]; then
-            echo $path/libxcb-util.so.1 does not exist!
-            echo Symlinking $path/libxcb-util.so.0 to it...
-            sudo ln -s $path/libxcb-util.so.0 $path/libxcb-util.so.1
+        fi
+    else
+        # Miniconda already installed
+        miniconda_python=1
+    fi
+  fi
+
+  if [ -z "$miniconda_python" ]; then
+      # No miniconda (e.g. Raspberry Pi), so standard Python install
+      python37=`which python3.7 2> /dev/null`
+
+      if [ -z "$python37" ]; then
+          mkdir -p ~/in
+          pushd ~/in
+          rm -f Python-3.7.9.tgz
+          rm -rf Python-3.7.9
+          wget https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz
+          tar xavf Python-3.7.9.tgz
+          pushd Python-3.7.9/
+          ./configure --prefix=/usr/local && sudo make altinstall
+          if [ $? -ne 0 ]; then
+            echo "Error building python 3.7. Please check errors and try again."
+            exit 1
           fi
-        done
+          popd; popd
+      fi
 
+      if [ ! -z "$zypper" ]; then
+        if [ -d /usr/local/lib64/python3.7/lib-dynload/ ]; then
+          echo "Fixing OpenSUSE bug with python outside of /usr/local"
+          # https://bugs.python.org/issue34058
+          sudo ln -s /usr/local/lib64/python3.7/lib-dynload/ /usr/local/lib/python3.7/lib-dynload
+        fi
+      fi
+
+  else
+      # miniconda python install
+      # Check if the PATH var is already set in .bash_profile
+      touch ~/.bash_profile
+      path_set=`egrep "^PATH=" ~/.bash_profile | grep $HOME/miniconda/bin`
+
+
+      if [ -z "$path_set" ]; then
+          # Put miniconda path at beginning
+          sed -i.bak -e "s@^PATH=@PATH=$HOME/miniconda/bin/:@" ~/.bash_profile
+      fi
+
+      sbin_path_set=`grep PATH= ~/.bash_profile | grep /sbin`
+
+      if [ -z "$sbin_path_set" ]; then
+          # Put the sbin paths into the PATH env variable.
+          sed -i.bak -e "s@^PATH=@PATH=/sbin:/usr/sbin:@" ~/.bash_profile
+      fi
+
+
+      # Check if the PATH var is already set in .profile
+      profile_exists=`grep PATH= ~/.profile`
+
+      if [ ! -z "$profile_exists" ]; then
+          path_set=`grep PATH=$HOME/miniconda/bin ~/.profile`
+          if [ -z "$path_set" ]; then
+              cat ~/.profile > ~/.profile.orig
+              echo "PATH=$HOME/miniconda/bin:$PATH" > ~/.profile
+              cat ~/.profile.orig >> ~/.profile
+          fi
+      fi
+
+      export PATH="$HOME/miniconda/bin:$PATH"
+
+      python37=`which python3.7 2> /dev/null`
+
+      if [ -z "$python37" ]; then
+          # Python 3.7 binary is there, but not in path
+          export PATH="$HOME/miniconda/bin:$PATH"
+          python37=`which python3.7 2> /dev/null`
+      fi
+
+
+      if [ -z "$python37" ]; then
+          echo "python 3.7 not found in path. Please check miniconda installation."
+          echo "Simply removing the ~/miniconda directory can allow for a clean installation."
+          exit 1
+      fi
+
+  fi
+
+
+  # Ubuntu with qt5 installed (e.g. UbuFuzz)
+  qt5=`dpkg -l qt5-qmake 2>/dev/null`
+  if [ ! -z "$qt5" ] && [ ! -z "$apt" ]; then
+      # We need qttools5-dev-tools to compile wireshark
+      sudo apt-get -y install qttools5-dev-tools
+  fi
+
+  # Build Wireshark if /usr/local/bin/tshark isn't there
+  if [ ! -f /usr/local/bin/tshark ]; then
+      mkdir -p ~/in
+      pushd ~/in
+      rm -f wireshark-2.6.17.tar.xz
+      rm -rf wireshark-2.6.17
+      wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.17.tar.xz
+      tar xavf wireshark-2.6.17.tar.xz
+      pushd wireshark-2.6.17/
+      ./configure && make && sudo make install
+      if [ $? -ne 0 ]; then
+          echo "Error building Wireshark. Please check errors and try again."
+          exit 1
+      fi
+      if [ "$ID" = "raspbian" ]; then
+          # Wireshark install on raspbian doesn't colorize by default.
+          # Why?  Nobody knows.
+          mkdir -p ~/.config/wireshark
+          cp colorfilters ~/.config/wireshark
+      fi
+      sudo ldconfig
+      popd; popd
+  fi
+
+  # Set capture permissions
+  sudo setcap cap_net_raw,cap_net_admin+ep `which dumpcap 2> /dev/null`
+
+
+  # Confirm pip is there
+  if [ -z "$miniconda_python" ]; then
+      # No miniconda (e.g. Raspberry Pi), so standard Python install
+      mypip=`which pip3.7 2> /dev/null`
+      if [ -z "$mypip" ]; then
+        # The detected python 3.7 was not one we compiled/installed
+        # There's probably not a "pip3.7" binary
+        echo Using already-installed python 3.7
+        mypip=`which pip3 2> /dev/null`
+        pipver=`$mypip -V`
+        echo Found pip version $pipver
+        if [[ "$pipver" != *"3.7"* ]]; then
+          echo pip for python 3.7 not found!
+          unset $mypip
+        fi
+      fi
+      echo "Using systemwide pip: $mypip"
+  else
+      # miniconda python
+      mypip=`which pip 2> /dev/null`
+      echo "Using miniconda pip: $mypip"
+  fi
+
+  if [ -z "$mypip" ]; then
+      "python 3.7 not found in path. Please check miniconda installation."
+      exit 1
+  fi
+
+  if [ -n "$pyqt5" ]; then
+    if [ ! -f /usr/bin/qmake ] && [ -f /usr/bin/qmake-qt5 ]; then
+      # Fedora (and others?) don't have qmake.  But rather qmake-qt5
+      # PyQt5 won't build without "qmake"
+      echo Creating symlink to /usr/bin/qmake...
+      sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
+    fi
+    if [ -f /usr/bin/qmake ] && [ -f /usr/bin/qmake-qt5 ]; then
+      # OpenSUSE has qmake (for Qt4) and qmake-qt5
+      # PyQt5 won't build with Qt4's qmake
+      echo Backing up original /usr/bin/qmake...
+      sudo mv /usr/bin/qmake /usr/bin/qmake.orig
+      echo Creating symlink to /usr/bin/qmake...
+      sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
+    fi
+  fi
+
+  # Install mitmproxy pyshark and deps into miniconda installation
+  if [ ! -z "$miniconda_python" ]; then
+      # We have miniconda, so leverage that for what we can
+      conda install -y sortedcontainers passlib certifi pyparsing click ruamel_yaml colorama pyopenssl
+      $mypip install pyshark GitPython
+      $mypip install mitmproxy
+      if [ $? -ne 0 ]; then
+        echo Trouble installing mitmproxy with $mypip. Retrying python install...
+        rm -rf ~/miniconda
+        skip_miniconda=1
+      else
+        mitmproxy_ok=1
+      fi
+
+      if [ -n "$pyqt5" ]; then
+        $mypip install PyQt5
       fi
   else
-      # Miniconda already installed
-      miniconda_python=1
-  fi
-fi
-
-if [ -z "$miniconda_python" ]; then
-    # No miniconda (e.g. Raspberry Pi), so standard Python install
-    python37=`which python3.7 2> /dev/null`
-
-    if [ -z "$python37" ]; then
-        mkdir -p ~/in
-        pushd ~/in
-        rm -f Python-3.7.9.tgz
-        rm -rf Python-3.7.9
-        wget https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz
-        tar xavf Python-3.7.9.tgz
-        pushd Python-3.7.9/
-        ./configure --prefix=/usr/local && sudo make altinstall
-        if [ $? -ne 0 ]; then
-          echo "Error building python 3.7. Please check errors and try again."
-          exit 1
-        fi
-        popd; popd
-    fi
-
-    if [ ! -z "$zypper" ]; then
-      if [ -d /usr/local/lib64/python3.7/lib-dynload/ ]; then
-        echo "Fixing OpenSUSE bug with python outside of /usr/local"
-        # https://bugs.python.org/issue34058
-        sudo ln -s /usr/local/lib64/python3.7/lib-dynload/ /usr/local/lib/python3.7/lib-dynload
+      # system-wide installed python
+      sudo $mypip install colorama mitmproxy pyshark GitPython
+      mitmproxy_ok=1
+      if [ -n "$pyqt5" ]; then
+        QT_SELECT=qt5 sudo -E $mypip install PyQt5
       fi
-    fi
-
-else
-    # miniconda python install
-    # Check if the PATH var is already set in .bash_profile
-    touch ~/.bash_profile
-    path_set=`egrep "^PATH=" ~/.bash_profile | grep $HOME/miniconda/bin`
-
-
-    if [ -z "$path_set" ]; then
-        # Put miniconda path at beginning
-        sed -i.bak -e "s@^PATH=@PATH=$HOME/miniconda/bin/:@" ~/.bash_profile
-    fi
-
-    sbin_path_set=`grep PATH= ~/.bash_profile | grep /sbin`
-
-    if [ -z "$sbin_path_set" ]; then
-        # Put the sbin paths into the PATH env variable.
-        sed -i.bak -e "s@^PATH=@PATH=/sbin:/usr/sbin:@" ~/.bash_profile
-    fi
-
-
-    # Check if the PATH var is already set in .profile
-    profile_exists=`grep PATH= ~/.profile`
-
-    if [ ! -z "$profile_exists" ]; then
-        path_set=`grep PATH=$HOME/miniconda/bin ~/.profile`
-        if [ -z "$path_set" ]; then
-            cat ~/.profile > ~/.profile.orig
-            echo "PATH=$HOME/miniconda/bin:$PATH" > ~/.profile
-            cat ~/.profile.orig >> ~/.profile
-        fi
-    fi
-
-    export PATH="$HOME/miniconda/bin:$PATH"
-
-    python37=`which python3.7 2> /dev/null`
-
-    if [ -z "$python37" ]; then
-        # Python 3.7 binary is there, but not in path
-        export PATH="$HOME/miniconda/bin:$PATH"
-        python37=`which python3.7 2> /dev/null`
-    fi
-
-
-    if [ -z "$python37" ]; then
-        echo "python 3.7 not found in path. Please check miniconda installation."
-        echo "Simply removing the ~/miniconda directory can allow for a clean installation."
-        exit 1
-    fi
-
-fi
-
-
-# Ubuntu with qt5 installed (e.g. UbuFuzz)
-qt5=`dpkg -l qt5-qmake 2>/dev/null`
-if [ ! -z "$qt5" ] && [ ! -z "$apt" ]; then
-    # We need qttools5-dev-tools to compile wireshark
-    sudo apt-get -y install qttools5-dev-tools
-fi
-
-# Build Wireshark if /usr/local/bin/tshark isn't there
-if [ ! -f /usr/local/bin/tshark ]; then
-    mkdir -p ~/in
-    pushd ~/in
-    rm -f wireshark-2.6.17.tar.xz
-    rm -rf wireshark-2.6.17
-    wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.17.tar.xz
-    tar xavf wireshark-2.6.17.tar.xz
-    pushd wireshark-2.6.17/
-    ./configure && make && sudo make install
-    if [ $? -ne 0 ]; then
-        echo "Error building Wireshark. Please check errors and try again."
-        exit 1
-    fi
-    if [ "$ID" = "raspbian" ]; then
-        # Wireshark install on raspbian doesn't colorize by default.
-        # Why?  Nobody knows.
-        mkdir -p ~/.config/wireshark
-        cp colorfilters ~/.config/wireshark
-    fi
-    sudo ldconfig
-    popd; popd
-fi
-
-# Set capture permissions
-sudo setcap cap_net_raw,cap_net_admin+ep `which dumpcap 2> /dev/null`
-
-
-# Confirm pip is there
-if [ -z "$miniconda_python" ]; then
-    # No miniconda (e.g. Raspberry Pi), so standard Python install
-    mypip=`which pip3.7 2> /dev/null`
-    if [ -z "$mypip" ]; then
-      # The detected python 3.7 was not one we compiled/installed
-      # There's probably not a "pip3.7" binary
-      echo Using already-installed python 3.7
-      mypip=`which pip3 2> /dev/null`
-      pipver=`$mypip -V`
-      echo Found pip version $pipver
-      if [[ "$pipver" != *"3.7"* ]]; then
-        echo pip for python 3.7 not found!
-        unset $mypip
-      fi
-    fi
-    echo "Using systemwide pip: $mypip"
-else
-    # miniconda python
-    mypip=`which pip 2> /dev/null`
-    echo "Using miniconda pip: $mypip"
-fi
-
-if [ -z "$mypip" ]; then
-    "python 3.7 not found in path. Please check miniconda installation."
-    exit 1
-fi
-
-if [ -n "$pyqt5" ]; then
-  if [ ! -f /usr/bin/qmake ] && [ -f /usr/bin/qmake-qt5 ]; then
-    # Fedora (and others?) don't have qmake.  But rather qmake-qt5
-    # PyQt5 won't build without "qmake"
-    echo Creating symlink to /usr/bin/qmake...
-    sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
   fi
-  if [ -f /usr/bin/qmake ] && [ -f /usr/bin/qmake-qt5 ]; then
-    # OpenSUSE has qmake (for Qt4) and qmake-qt5
-    # PyQt5 won't build with Qt4's qmake
-    echo Backing up original /usr/bin/qmake...
-    sudo mv /usr/bin/qmake /usr/bin/qmake.orig
-    echo Creating symlink to /usr/bin/qmake...
-    sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
-  fi
-fi
-
-# Install mitmproxy pyshark and deps into miniconda installation
-if [ ! -z "$miniconda_python" ]; then
-    # We have miniconda, so leverage that for what we can
-    conda install -y sortedcontainers passlib certifi pyparsing click ruamel_yaml colorama pyopenssl
-    $mypip install pyshark GitPython
-    $mypip install mitmproxy
-    if [ $? -ne 0 ]; then
-      echo Trouble installing mitmproxy with $mypip. Trying w/o dependencies...
-      $mypip install mitmproxy --no-dependencies
-    fi
-
-    if [ -n "$pyqt5" ]; then
-      $mypip install PyQt5
-    fi
-else
-    # system-wide installed python
-    sudo $mypip install colorama mitmproxy pyshark GitPython
-    if [ -n "$pyqt5" ]; then
-      QT_SELECT=qt5 sudo -E $mypip install PyQt5
-    fi
-fi
+done
 
 # Enable services on boot
 if [ ! -z "$zypper" ]; then

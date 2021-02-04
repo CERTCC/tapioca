@@ -269,6 +269,9 @@ elif [ ! -z "$apt" ]; then
       if [ $? -ne 0 ]; then
         echo "snap didn't work. Attempting to apt-get install chromium..."
         DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium-browser
+      else
+        # snap-installed chromium doesn't provie an icon.  Because of course.
+        sed -i.bak -e 's/^Icon=chromium-browser/Icon=web-browser/' config/xfce4/panel/launcher-11/14849268213.desktop
       fi
       echo Ubuntu-like OS detected
     fi

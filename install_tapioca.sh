@@ -265,7 +265,11 @@ elif [ ! -z "$apt" ]; then
       # Fix Chromium icon
       sed -i.bak -e 's/^Icon=chromium-browser/Icon=chromium/' config/xfce4/panel/launcher-11/14849268213.desktop
     else
-      DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium-browser
+      DEBIAN_FRONTEND=noninteractive sudo -E snap install chromium
+      if [ $? -ne 0 ]; then
+        echo "snap didn't work. Attempting to apt-get install chromium..."
+        DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium-browser
+      fi
       echo Ubuntu-like OS detected
     fi
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libsqlite3-dev

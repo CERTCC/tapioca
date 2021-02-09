@@ -201,7 +201,7 @@ if [ ! -z "$zypper" ]; then
     libnl3-devel libpcap-devel gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
     libnghttp2-devel libcap-progs NetworkManager-applet gdm dhcp-server \
-    net-tools-deprecated xclip; then
+    net-tools-deprecated xclip sqlite3-devel; then
       echo Modern OpenSUSE detected
       sudo zypper -n install libGeoIP-devel
       sudo zypper -n install python3-colorama
@@ -218,8 +218,9 @@ if [ ! -z "$zypper" ]; then
       tmux iw hostapd wxPython mousepad tk-devel \
       glib2-devel qt-devel gnutls-devel libcares-devel libsmi-devel libcap-devel \
       libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
-      conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel\
-      libnghttp2-devel libcap-progs NetworkManager-gnome gdm dhcp-server xclip
+      conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
+      libnghttp2-devel libcap-progs NetworkManager-gnome gdm dhcp-server xclip \
+      sqlite3-devel
       if [ $? -ne 0 ]; then
         echo "Error installing dependency packages. Please check errors and try again."
         exit 1

@@ -630,6 +630,7 @@ if [ ! -z "$zypper" ]; then
     sudo systemctl enable NetworkManager
     sudo systemctl enable dnsmasq
     sudo systemctl enable dhcpd
+    sudo systemctl disable firewalld
 elif [ ! -z "$yum" ]; then
     sudo systemctl disable libvirtd
     sudo systemctl enable dnsmasq

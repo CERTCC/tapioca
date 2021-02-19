@@ -497,6 +497,13 @@ while [ -z "$mitmproxy_ok" ]; do
           fi
       fi
 
+      xsessionrc_sources=`grep HOME/.profile ~/.xsessionrc`
+
+      if [ -z "$xsessionrc_sources" ]; then
+        # LightDM doesn't source ~/.profile automatically
+        echo '. $HOME/.profile' >> ~/.xsessionrc
+      fi
+
       export PATH="$HOME/miniconda/bin:$PATH"
 
       python37=`which python3.7 2> /dev/null`

@@ -620,6 +620,12 @@ while [ -z "$mitmproxy_ok" ]; do
 
       if [ -n "$pyqt5" ]; then
         $mypip install PyQt5
+        if [ $? -ne 0 ]; then
+          echo "Problem installing PyQt5 with $mypip. Retrying without miniconda..."
+          rm -rf ~/miniconda
+          unset mitmproxy_ok
+          skip_miniconda=1
+        fi
       fi
   else
       # system-wide installed python

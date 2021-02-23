@@ -231,6 +231,7 @@ elif [ ! -z "$yum" ]; then
     sudo yum -y install wxPython
     sudo yum -y install libsq3-devel
     sudo yum -y install dhcp
+    sudo yum -y install dhcp-server
     sudo yum -y install libsmi-devel
     sudo yum -y install gnome-icon-theme.noarch
     sudo yum -y install snappy-devel

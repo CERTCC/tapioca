@@ -538,7 +538,7 @@ while [ -z "$mitmproxy_ok" ]; do
       pushd ~/in
       rm -f wireshark-2.6.17.tar.xz
       rm -rf wireshark-2.6.17
-      wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.17.tar.xz
+      wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.20.tar.xz
       tar xavf wireshark-2.6.17.tar.xz
       pushd wireshark-2.6.17/
       ./configure && make && sudo make install

@@ -48,10 +48,33 @@ resp_after = 'Content to replace the above with'
 #    calcbytes = f.read()
 
 def response(flow: http.HTTPFlow) -> None:
-    flow.response.replace(resp_before, resp_after)
+    try:
+        # Older mitmproxy version
+        flow.response.replace(resp_before, resp_after)
+    except AttributeError:
+        # Newer mitmproxy version
+        # https://stackoverflow.com/questions/64111152/issue-converting-older-mitmproxy-scripts-to-work-on-5-2-error-on-replace-and-c
+        if flow.response.content:
+            try:
+                # Try binary replacement first
+                flow.response.content = flow.response.content.replace(resp_before, resp_after)
+            except TypeError:
+                # Then fall back to text replacement
+                flow.response.text = flow.response.text.replace(resp_before, resp_after)
 
 def request(flow: http.HTTPFlow) -> None:
-    flow.request.replace(req_before, req_after)
+    try:
+        # Older mitmproxy version
+        flow.request.replace(req_before, req_after)
+    except AttributeError:
+        # Newer mitmproxy version
+        if flow.request.content:
+            try:
+                # Try binary replacement first
+                flow.request.content = flow.request.content.replace(req_before, req_after)
+            except TypeError:
+                # Then fall back to text replacement
+                flow.request.text = flow.request.text.replace(req_before, req_after)
     #flow.request.headers['User-Agent'] = 'Custom User-Agent'
 
 ## Below is an example that will answer any question for a URI that ends in '.exe'

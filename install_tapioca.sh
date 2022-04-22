@@ -27,14 +27,15 @@
 #
 # END LICENSE #
 
-user_id=`whoami`
-yum=`which yum 2>/dev/null`
-dnf=`which dnf 2>/dev/null`
-apt=`which apt-get 2>/dev/null`
-zypper=`which zypper 2>/dev/null`
-sudogroup=`egrep "^wheel:|^sudo:" /etc/group | awk -F: '{print $1}'`
-tapiocasudo=`egrep "^$sudogroup" /etc/group | grep tapioca`
-arch=`uname -m`
+user_id=$(whoami)
+yum=$(which yum 2>/dev/null)
+dnf=$(which dnf 2>/dev/null)
+apt=$(which apt-get 2>/dev/null)
+zypper=$(which zypper 2>/dev/null)
+sudogroup=$(egrep "^wheel:|^sudo:" /etc/group | awk -F: '{print $1}')
+tapiocasudo=$(egrep "^$sudogroup" /etc/group | grep tapioca)
+arch=$(uname -m)
+tshark="/usr/bin/tshark"
 
 if [ -f /etc/os-release ]; then
     source /etc/os-release
@@ -73,9 +74,9 @@ if [ "$PWD" != "/home/tapioca/tapioca" ]; then
     exit 1
 fi
 
-root_privs=`grep tapioca /etc/sudoers 2>/dev/null`
+root_privs=$(grep tapioca /etc/sudoers 2>/dev/null)
 
-if [ ! -z "$root_privs" ] || [ "$user_id" == "root" ]; then
+if [ -n "$root_privs" ] || [ "$user_id" == "root" ]; then
     echo "Please do not run this script with root privileges"
     exit 1
 fi
@@ -101,7 +102,7 @@ if [ -z "$tapiocasudo" ]; then
     exit 1
 fi
 
-sudo_configured=`sudo grep "tapioca ALL=NOPASSWD: ALL" /etc/sudoers`
+sudo_configured=$(sudo grep "tapioca ALL=NOPASSWD: ALL" /etc/sudoers)
 
 if [ -z "$sudo_configured" ]; then
     # Don't require password for tapioca sudo
@@ -110,19 +111,19 @@ if [ -z "$sudo_configured" ]; then
     sudo sh -c "echo 'tapioca ALL=NOPASSWD: ALL' >> /etc/sudoers"
 fi
 
-netstat=`which netstat 2>/dev/null`
+netstat=$(which netstat 2>/dev/null)
 
 # Detect internal and external network adapters
 if [ -z "$netstat" ]; then
-    detected_external=`ip route show | egrep "^default " | awk -F' dev ' '{print $2}' | awk '{print $1}' | head -n1`
-    detected_internal=`ip route show | egrep "^10.0.0.0/24 " | awk -F' dev ' '{print $2}' | awk '{print $1}' | head -n1`
+    detected_external=$(ip route show | egrep "^default " | awk -F' dev ' '{print $2}' | awk '{print $1}' | head -n1)
+    detected_internal=$(ip route show | egrep "^10.0.0.0/24 " | awk -F' dev ' '{print $2}' | awk '{print $1}' | head -n1)
 else
-    detected_external=`netstat -rn | egrep "^0.0.0.0" | awk '{print $NF}' | head -n1`
-    detected_internal=`netstat -rn | egrep "^10.0.0.0" | awk '{print $NF}' | head -n1`
+    detected_external=$(netstat -rn | egrep "^0.0.0.0" | awk '{print $NF}' | head -n1)
+    detected_internal=$(netstat -rn | egrep "^10.0.0.0" | awk '{print $NF}' | head -n1)
 fi
 
 
-if [ ! -z "$detected_external" ]; then
+if [ -n "$detected_external" ]; then
     echo "detected external network adapter: $detected_external"
     # Replace WAN adapter in tapioca.cfg file
     sed -i.bak -e "s/external_net=.*/external_net=$detected_external/" tapioca.cfg
@@ -131,7 +132,7 @@ else
     sleep 10
 fi
 
-if [ ! -z "$detected_internal" ]; then
+if [ -n "$detected_internal" ]; then
     echo "detected internal network adapter: $detected_internal"
     # Replace LAN adapter in tapioca.cfg file
     sed -i.bak -e "s/internal_net=.*/internal_net=$detected_internal/" tapioca.cfg
@@ -155,7 +156,7 @@ mkdir -p ~/.cache
 if [ ! -f ~/.bash_profile ]; then
     echo "PATH=$PATH" > ~/.bash_profile
 fi
-path_set=`egrep "^PATH=" ~/.bash_profile`
+path_set=$(egrep "^PATH=" ~/.bash_profile)
 
 if [ -z "$path_set" ]; then
     # there is a ~/.bash_profile file, but no PATH is set
@@ -165,14 +166,14 @@ if [ -z "$path_set" ]; then
     cp .bash_profile.tmp ~/.bash_profile
 fi
 
-if [ ! -z "$dnf" ] && [ "$ID" == "fedora" ]; then
+if [ -n "$dnf" ] && [ "$ID" == "fedora" ]; then
     # dnf is present. So probably Fedora
     sudo dnf -y group install "Fedora Workstation"
     sudo dnf -y group install xfce "Development tools" "Development Libraries"
     sudo dnf -y install perl-Pod-Html gcc-c++ redhat-rpm-config python3-devel
 fi
 
-if [ ! -z "$yum" ]; then
+if [ -n "$yum" ]; then
     #EL and not Fedora
     sudo yum makecache
     sudo yum -y install epel-release
@@ -189,9 +190,13 @@ if [ ! -z "$yum" ]; then
         sudo dnf -y --enablerepo=powertools install perl-Pod-Html qt5-devel libpcap-devel libgcrypt-devel
       fi
     fi
+
+
+    # RHEL / CentOS have an ancient Wireshark.  We'll need to build our own.
+    tshark="/usr/local/bin/tshark"
 fi
 
-if [ ! -z "$zypper" ]; then
+if [ -n "$zypper" ]; then
     # Try packages for modern OpenSUSE
     if sudo zypper -n install patterns-devel-base-devel_basis patterns-xfce-xfce_basis \
      man libxml2-devel libxml2 libxslt libxslt-devel python3-devel libopenssl-devel dnsmasq tcpdump \
@@ -201,7 +206,7 @@ if [ ! -z "$zypper" ]; then
     libnl3-devel libpcap-devel gnome-icon-theme \
     conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
     libnghttp2-devel libcap-progs NetworkManager-applet gdm dhcp-server \
-    net-tools-deprecated xclip sqlite3-devel; then
+    net-tools-deprecated xclip sqlite3-devel wireshark; then
       echo Modern OpenSUSE detected
       sudo zypper -n install libGeoIP-devel
       sudo zypper -n install python3-colorama
@@ -220,13 +225,13 @@ if [ ! -z "$zypper" ]; then
       libGeoIP-devel libnl3-devel libpcap-devel gnome-icon-theme \
       conntrack-tools libqt5-qtbase-devel libqt5-linguist snappy-devel \
       libnghttp2-devel libcap-progs NetworkManager-gnome gdm dhcp-server xclip \
-      sqlite3-devel
+      sqlite3-devel wireshark
       if [ $? -ne 0 ]; then
         echo "Error installing dependency packages. Please check errors and try again."
         exit 1
       fi
     fi
-elif [ ! -z "$yum" ]; then
+elif [ -n "$yum" ]; then
     # yum is present. EL7 and Fedora.
     sudo yum -y install wxPython
     sudo yum -y install libsq3-devel
@@ -248,7 +253,7 @@ elif [ ! -z "$yum" ]; then
     glib2-devel gnutls-devel c-ares-devel libcap-devel \
     GeoIP-devel libnl3-devel libpcap-devel libffi-devel \
     conntrack-tools qt5-qtbase-devel qt5-linguist \
-    libgcrypt-devel xclip
+    libgcrypt-devel xclip wireshark
     if [ $? -ne 0 ]; then
       echo "Error installing dependency packages. Please check errors and try again."
       exit 1
@@ -259,7 +264,7 @@ elif [ ! -z "$yum" ]; then
         pyqt5=1
     fi
 
-elif [ ! -z "$apt" ]; then
+elif [ -n "$apt" ]; then
     #apt-get is present.  So Debian or ubuntu
     sudo apt-get -y update
     if DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium; then
@@ -279,11 +284,11 @@ elif [ ! -z "$apt" ]; then
     fi
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install libsqlite3-dev
     DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install xfce4 xfce4-goodies build-essential libxml2-dev \
-    libxslt1-dev python-dev libssl-dev dnsmasq tcpdump isc-dhcp-server \
+    libxslt1-dev libssl-dev dnsmasq tcpdump isc-dhcp-server \
     telnet nano xdotool tmux iptables iw nmap xterm \
     libglib2.0-dev libc-ares-dev libsmi2-dev \
     libcap-dev libgeoip-dev libnl-3-dev libpcap-dev \
-    python3-pip \
+    python3-pip wireshark tshark\
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
     libsnappy-dev libgcrypt-dev ifupdown xclip
@@ -308,21 +313,21 @@ else
   echo Miniconda is not available on $arch
   # We're going to have to get our own PyQt5 with pip
   # Start with just OpenSUSE for now...
-  if [ ! -z "$zypper" ]; then
+  if [ -n "$zypper" ]; then
     pyqt5=1
   fi
 fi
 
-if [ ! -z "$zypper" ]; then
+if [ -n "$zypper" ]; then
     sudo zypper -n install chromium
 fi
 
-if [ ! -z "$yum" ]; then
+if [ -n "$yum" ]; then
     # If already installed, these packages can interfere with our Wireshark
     sudo yum remove -y pyOpenSSL wireshark 2> /dev/null
 fi
 
-if [ ! -z "$apt" ]; then
+if [ -n "$apt" ]; then
     # set the default terminal emulator
     sudo update-alternatives --set x-terminal-emulator /usr/bin/xfce4-terminal.wrapper
 
@@ -337,6 +342,14 @@ if [ ! -z "$apt" ]; then
     sudo apt-get -y install qttools5-dev-tools
     sudo apt-get -y install qttools5-dev
     sudo apt-get -y install libnghttp2-dev
+    sudo apt-get -y install python-dev
+    sudo apt-get -y install python2-dev
+    sudo apt-get -y install python3-pyqt4
+    sudo apt-get -y install libqt4-dev
+    sudo apt-get -y install python-qt4
+    sudo apt-get -y install python-colorama
+    sudo apt-get -y install libxcb-xinerama0
+
 fi
 
 if [ -f /etc/sysconfig/dhcpd ]; then
@@ -393,7 +406,7 @@ fi
 while [ -z "$mitmproxy_ok" ]; do
   # Not really a while loop.  Just a "goto" equivalent in case mitmproxy install
   # fails with miniconda
-  if [ ! -z "$skip_miniconda" ] || [ "$ID" == "fedora" ] || ([ "$ID" == "centos" ] && [ "$VERSION_ID" == "8" ]); then
+  if [ -n "$skip_miniconda" ] || [ "$ID" == "fedora" ] || ([ "$ID" == "centos" ] && [ "$VERSION_ID" == "8" ]); then
     echo "We won't attempt to use miniconda on Fedora or CENTOS 8"
     # https://bugzilla.redhat.com/show_bug.cgi?id=1829790
     # Also miniconda recently fails to install mitmproxy due to a conflict with
@@ -440,14 +453,14 @@ while [ -z "$mitmproxy_ok" ]; do
 
   if [ -z "$miniconda_python" ]; then
       # No miniconda (e.g. Raspberry Pi), so standard Python install
-      python37=`which python3.7 2> /dev/null`
+      python37=$(which python3.7 2> /dev/null)
 
       if [ -z "$python37" ]; then
           mkdir -p ~/in
           pushd ~/in
           rm -f Python-3.7.10.tgz
           rm -rf Python-3.7.10
-          wget https://www.python.org/ftp/python/3.7.10/Python-3.7.10.tgz
+          curl -OL https://www.python.org/ftp/python/3.7.10/Python-3.7.10.tgz
           tar xavf Python-3.7.10.tgz
           pushd Python-3.7.10/
           ./configure --prefix=/usr/local && sudo make altinstall
@@ -458,7 +471,7 @@ while [ -z "$mitmproxy_ok" ]; do
           popd; popd
       fi
 
-      if [ ! -z "$zypper" ]; then
+      if [ -n "$zypper" ]; then
         if [ -d /usr/local/lib64/python3.7/lib-dynload/ ]; then
           echo "Fixing OpenSUSE bug with python outside of /usr/local"
           # https://bugs.python.org/issue34058
@@ -470,7 +483,7 @@ while [ -z "$mitmproxy_ok" ]; do
       # miniconda python install
       # Check if the PATH var is already set in .bash_profile
       touch ~/.bash_profile
-      path_set=`egrep "^PATH=" ~/.bash_profile | grep $HOME/miniconda/bin`
+      path_set=$(egrep "^PATH=" ~/.bash_profile | grep $HOME/miniconda/bin)
 
 
       if [ -z "$path_set" ]; then
@@ -478,7 +491,7 @@ while [ -z "$mitmproxy_ok" ]; do
           sed -i.bak -e "s@^PATH=@PATH=$HOME/miniconda/bin/:@" ~/.bash_profile
       fi
 
-      sbin_path_set=`grep PATH= ~/.bash_profile | grep /sbin`
+      sbin_path_set=$(grep PATH= ~/.bash_profile | grep /sbin)
 
       if [ -z "$sbin_path_set" ]; then
           # Put the sbin paths into the PATH env variable.
@@ -487,10 +500,10 @@ while [ -z "$mitmproxy_ok" ]; do
 
 
       # Check if the PATH var is already set in .profile
-      profile_exists=`grep PATH= ~/.profile`
+      profile_exists=$(grep PATH= ~/.profile)
 
-      if [ ! -z "$profile_exists" ]; then
-          path_set=`grep PATH=$HOME/miniconda/bin ~/.profile`
+      if [ -n "$profile_exists" ]; then
+          path_set=$(grep PATH=$HOME/miniconda/bin ~/.profile)
           if [ -z "$path_set" ]; then
               cat ~/.profile > ~/.profile.orig
               echo "PATH=$HOME/miniconda/bin:$PATH" > ~/.profile
@@ -498,7 +511,7 @@ while [ -z "$mitmproxy_ok" ]; do
           fi
       fi
 
-      xsessionrc_sources=`grep HOME/.profile ~/.xsessionrc`
+      xsessionrc_sources=$(grep HOME/.profile ~/.xsessionrc)
 
       if [ -z "$xsessionrc_sources" ]; then
         # LightDM doesn't source ~/.profile automatically
@@ -507,12 +520,12 @@ while [ -z "$mitmproxy_ok" ]; do
 
       export PATH="$HOME/miniconda/bin:$PATH"
 
-      python37=`which python3.7 2> /dev/null`
+      python37=$(which python3.7 2> /dev/null)
 
       if [ -z "$python37" ]; then
           # Python 3.7 binary is there, but not in path
           export PATH="$HOME/miniconda/bin:$PATH"
-          python37=`which python3.7 2> /dev/null`
+          python37=$(which python3.7 2> /dev/null)
       fi
 
 
@@ -526,19 +539,19 @@ while [ -z "$mitmproxy_ok" ]; do
 
 
   # Ubuntu with qt5 installed (e.g. UbuFuzz)
-  qt5=`dpkg -l qt5-qmake 2>/dev/null`
-  if [ ! -z "$qt5" ] && [ ! -z "$apt" ]; then
+  qt5=$(dpkg -l qt5-qmake 2>/dev/null)
+  if [ -n "$qt5" ] && [ -n "$apt" ]; then
       # We need qttools5-dev-tools to compile wireshark
       sudo apt-get -y install qttools5-dev-tools
   fi
 
-  # Build Wireshark if /usr/local/bin/tshark isn't there
-  if [ ! -f /usr/local/bin/tshark ]; then
+  # Build Wireshark if tshark isn't there
+  if [ ! -f $tshark ]; then
       mkdir -p ~/in
       pushd ~/in
       rm -f wireshark-2.6.20.tar.xz
       rm -rf wireshark-2.6.20
-      wget https://www.wireshark.org/download/src/all-versions/wireshark-2.6.20.tar.xz
+      curl -OL https://www.wireshark.org/download/src/all-versions/wireshark-2.6.20.tar.xz
       tar xavf wireshark-2.6.20.tar.xz
       pushd wireshark-2.6.20/
       ./configure && make && sudo make install
@@ -557,19 +570,19 @@ while [ -z "$mitmproxy_ok" ]; do
   fi
 
   # Set capture permissions
-  sudo setcap cap_net_raw,cap_net_admin+ep `which dumpcap 2> /dev/null`
+  sudo setcap cap_net_raw,cap_net_admin+ep $(which dumpcap 2> /dev/null)
 
 
   # Confirm pip is there
   if [ -z "$miniconda_python" ]; then
       # No miniconda (e.g. Raspberry Pi), so standard Python install
-      mypip=`which pip3.7 2> /dev/null`
+      mypip=$(which pip3.7 2> /dev/null)
       if [ -z "$mypip" ]; then
         # The detected python 3.7 was not one we compiled/installed
         # There's probably not a "pip3.7" binary
         echo Using already-installed python 3.7
-        mypip=`which pip3 2> /dev/null`
-        pipver=`$mypip -V`
+        mypip=$(which pip3 2> /dev/null)
+        pipver=$($mypip -V)
         echo Found pip version $pipver
         if [[ "$pipver" != *"3.7"* ]]; then
           echo pip for python 3.7 not found!
@@ -579,7 +592,7 @@ while [ -z "$mitmproxy_ok" ]; do
       echo "Using systemwide pip: $mypip"
   else
       # miniconda python
-      mypip=`which pip 2> /dev/null`
+      mypip=$(which pip 2> /dev/null)
       echo "Using miniconda pip: $mypip"
   fi
 
@@ -606,7 +619,7 @@ while [ -z "$mitmproxy_ok" ]; do
   fi
 
   # Install mitmproxy pyshark and deps into miniconda installation
-  if [ ! -z "$miniconda_python" ]; then
+  if [ -n "$miniconda_python" ]; then
       # We have miniconda, so leverage that for what we can
       conda install -y sortedcontainers passlib certifi pyparsing click ruamel_yaml colorama pyopenssl
       $mypip install pyshark GitPython
@@ -639,19 +652,19 @@ while [ -z "$mitmproxy_ok" ]; do
 done
 
 # Enable services on boot
-if [ ! -z "$zypper" ]; then
+if [ -n "$zypper" ]; then
     sudo systemctl set-default graphical.target
     sudo systemctl enable NetworkManager
     sudo systemctl enable dnsmasq
     sudo systemctl enable dhcpd
     sudo systemctl disable firewalld
-elif [ ! -z "$yum" ]; then
+elif [ -n "$yum" ]; then
     sudo systemctl disable libvirtd
     sudo systemctl enable dnsmasq
     sudo systemctl enable dhcpd
     sudo systemctl disable firewalld
     sudo systemctl enable iptables
-elif [ ! -z "$apt" ]; then
+elif [ -n "$apt" ]; then
     sudo update-rc.d dnsmasq enable
     sudo update-rc.d isc-dhcp-server enable
 fi
@@ -685,6 +698,10 @@ else
     sudo service iptables save
 fi
 
+# The icon names for Wireshark changed in Ubuntu 22.04
+# This is why we can't have nice things.
+new_wireshark_icons=$(find /usr/share/icons -name "org.wireshark.Wireshark*")
+
 # Copy over preconfigured xfce
 if [ -d ~/.config ]; then
     if [ -d ~/.config/xfce4 ]; then
@@ -711,6 +728,13 @@ else
 fi
 
 cp -r local/share ~/.local/
+
+if [ -n "$new_wireshark_icons" ]; then
+    find ~/.config/xfce4/panel/ -name "*.desktop" | xargs egrep -l "^Icon=application-wireshark-doc" | xargs -n1 sed -i.bak -e "s/^Icon=application-wireshark-doc/Icon=org.wireshark.Wireshark-mimetype/"
+    find ~/.config/xfce4/panel/ -name "*.desktop" | xargs egrep -l "^Icon=wireshark" | xargs -n1 sed -i.bak -e "s/^Icon=wireshark/Icon=org.wireshark.Wireshark/"
+    find ~/.local/share/applications/ -name "*.desktop" | xargs egrep -l "^Icon=wireshark" | xargs -n1 sed -i.bak -e "s/^Icon=wireshark/Icon=org.wireshark.Wireshark/"
+fi
+
 pushd ~/.local/share/mime
 update-mime-database $PWD
 popd
@@ -719,7 +743,7 @@ mkdir -p ~/tapioca/results
 
 mkdir -p ~/.config/Mousepad
 touch ~/.config/Mousepad/mousepadrc
-mousepad_wordwrap=`grep "ViewWordWrap=true" ~/.config/Mousepad/mousepadrc`
+mousepad_wordwrap=$(grep "ViewWordWrap=true" ~/.config/Mousepad/mousepadrc)
 if [ -z "$mousepad_wordwrap" ]; then
     # Wrap mousepad long lines by default
     echo ViewWordWrap=true >> ~/.config/Mousepad/mousepadrc
@@ -736,13 +760,13 @@ echo "sudo service dnsmasq restart" > ~/.xinitrc
 echo "sudo service dhcpd restart" >> ~/.xinitrc
 echo "exec /usr/bin/xfce4-session" >> ~/.xinitrc
 
-startx=`grep startx ~/.bash_profile`
+startx=$(grep startx ~/.bash_profile)
 if [ -z "$startx" ]; then
     echo startx >> ~/.bash_profile
 fi
 
 
-if [ ! -z "$apt" ]; then
+if [ -n "$apt" ]; then
     # Ubuntu systems need to have network-manager for Tapioca
     sudo mv /etc/network/interfaces /etc/network/interfaces.orig
     sudo cp etc/network/interfaces /etc/network/interfaces
@@ -760,7 +784,7 @@ if [ ! -z "$apt" ]; then
     if [ -e "/etc/netplan/50-cloud-init.yaml" ]; then
         # Ubuntu 18.04 uses networkd instead of NetworkManager.  We need the latter.
         sudo mv /etc/netplan/50-cloud-init.yaml /etc/netplan/01-network-manager-all.yaml
-        networkmanager=`grep "renderer: NetworkManager" /etc/netplan/01-network-manager-all.yaml`
+        networkmanager=$(grep "renderer: NetworkManager" /etc/netplan/01-network-manager-all.yaml)
         if [ -z "$networkmanager" ]; then
             sudo bash -c "echo '    renderer: NetworkManager' >> /etc/netplan/01-network-manager-all.yaml"
         fi
@@ -772,13 +796,13 @@ fi
 if [ -e "/etc/systemd/resolved.conf" ]; then
     # Ubuntu 18.04 uses systemd-resolve instead of dnsmasq.
     # We need to enable udp-listening resolver.
-    udplistener=`egrep "^DNSStubListener=udp" /etc/systemd/resolved.conf`
+    udplistener=$(egrep "^DNSStubListener=udp" /etc/systemd/resolved.conf)
     if [ -z "$udplistener" ]; then
         sudo bash -c "echo 'DNSStubListener=udp' >> /etc/systemd/resolved.conf"
     fi
 fi
 
-if [ ! -z "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then
+if [ -n "$dnf" ] && [ ! -f /usr/bin/xfce4-session ]; then
     # Fedora can be silly.  It can have xfce installed, but not present.
     # In such a case, remove it and reinstall it.
     sudo dnf -y group remove xfce
@@ -787,13 +811,13 @@ fi
 
 # Some distros (e.g. Fedora) may configure dnsmasq to only listen on loopback
 if [ -f /etc/dnsmasq.conf ]; then
-  loopback_dnsmasq=`egrep "^interface=lo" /etc/dnsmasq.conf`
-  if [ ! -z "$loopback_dnsmasq" ]; then
+  loopback_dnsmasq=$(egrep "^interface=lo" /etc/dnsmasq.conf)
+  if [ -n "$loopback_dnsmasq" ]; then
     echo Unsetting dnsmasq directive to only bind to loopback...
     sudo sed -i.bak -e "s/^interface=lo/#interface=lo/" /etc/dnsmasq.conf
   fi
-  bind_interfaces=`egrep "^bind-interfaces" /etc/dnsmasq.conf`
-  if [ ! -z "$bind_interfaces" ]; then
+  bind_interfaces=$(egrep "^bind-interfaces" /etc/dnsmasq.conf)
+  if [ -n "$bind_interfaces" ]; then
     echo Unsetting dnsmasq bind-interfaces directive...
     sudo sed -i.bak -e "s/^bind-interfaces/#bind-interfaces/" /etc/dnsmasq.conf
   fi

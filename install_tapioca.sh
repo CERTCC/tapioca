@@ -191,9 +191,10 @@ if [ -n "$yum" ]; then
       fi
     fi
 
-
-    # RHEL / CentOS have an ancient Wireshark.  We'll need to build our own.
-    tshark="/usr/local/bin/tshark"
+    if [ "$ID" != "fedora" ]; then
+      # RHEL / CentOS have an ancient Wireshark.  We'll need to build our own.
+      tshark="/usr/local/bin/tshark"
+    fi
 fi
 
 if [ -n "$zypper" ]; then
@@ -322,7 +323,7 @@ if [ -n "$zypper" ]; then
     sudo zypper -n install chromium
 fi
 
-if [ -n "$yum" ]; then
+if [ -n "$yum" ] && [ "$ID" != "fedora" ]; then
     # If already installed, these packages can interfere with our Wireshark
     sudo yum remove -y pyOpenSSL wireshark 2> /dev/null
 fi
@@ -406,7 +407,7 @@ fi
 while [ -z "$mitmproxy_ok" ]; do
   # Not really a while loop.  Just a "goto" equivalent in case mitmproxy install
   # fails with miniconda
-  if [ -n "$skip_miniconda" ] || [ "$ID" == "fedora" ] || ([ "$ID" == "centos" ] && [ "$VERSION_ID" == "8" ]); then
+  if [ -n "$skip_miniconda" ] || [ "$ID" == "fedora" ] || ([ "$ID" == "centos" ] && [ "$VERSION_ID" == "8" ]) || ([ "$ID" == "rhel" ] && [ "$VERSION_ID" == "8" ]); then
     echo "We won't attempt to use miniconda on Fedora or CENTOS 8"
     # https://bugzilla.redhat.com/show_bug.cgi?id=1829790
     # Also miniconda recently fails to install mitmproxy due to a conflict with

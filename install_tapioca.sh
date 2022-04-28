@@ -645,6 +645,11 @@ while [ -z "$mitmproxy_ok" ]; do
   else
       # system-wide installed python
       sudo $mypip install colorama mitmproxy pyshark GitPython
+
+      # pip is a moving target and everything is terrible
+      # https://techoverflow.net/2022/04/07/how-to-fix-jupyter-lab-importerror-cannot-import-name-soft_unicode-from-markupsafe/
+      sudo $mypip install markupsafe==2.0.1
+
       mitmproxy_ok=1
       if [ -n "$pyqt5" ]; then
         QT_SELECT=qt5 sudo -E $mypip install PyQt5

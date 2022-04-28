@@ -459,11 +459,11 @@ while [ -z "$mitmproxy_ok" ]; do
       if [ -z "$python37" ]; then
           mkdir -p ~/in
           pushd ~/in
-          rm -f Python-3.7.10.tgz
-          rm -rf Python-3.7.10
-          curl -OL https://www.python.org/ftp/python/3.7.10/Python-3.7.10.tgz
-          tar xavf Python-3.7.10.tgz
-          pushd Python-3.7.10/
+          rm -f Python-3.7.13.tgz
+          rm -rf Python-3.7.13
+          curl -OL https://www.python.org/ftp/python/3.7.10/Python-3.7.13.tgz
+          tar xavf Python-3.7.13.tgz
+          pushd Python-3.7.13/
           ./configure --prefix=/usr/local && sudo make altinstall
           if [ $? -ne 0 ]; then
             echo "Error building python 3.7. Please check errors and try again."

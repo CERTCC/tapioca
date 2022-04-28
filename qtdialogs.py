@@ -39,9 +39,9 @@ msgBox = QMessageBox()
 
 def YesNo(question='', caption='Tapioca'):
     msgBox.setIcon(QMessageBox.Question)
-    msgBox.setText(message)
+    msgBox.setText(question)
     msgBox.setWindowTitle(caption)
-    msgBox.setStandardButtons(QMessageBox.Yes, QMessageBox.No)
+    msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
     ret = msgBox.exec()
     if ret == QMessageBox.Yes:
         return True
@@ -66,5 +66,5 @@ def Warn(message='', caption='Warning!'):
 
 
 def Ask(message='', caption='Tapioca', default_value=''):
-    text, ok = QInputDialog.getText(win, caption, message)
+    text, ok = QInputDialog.getText(win, caption, message, text=default_value)
     return text

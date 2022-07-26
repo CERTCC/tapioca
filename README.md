@@ -15,6 +15,9 @@
 * [Strategies for Using Tapioca](#strategies-for-using-tapioca)
 * [Manual Execution of Scripts](#manual-execution-of-scripts)
 
+# Note
+
+CERT Tapioca is a project that I created while at the CERT/CC. It is unclear if the original repository will receive any maintenance after my departure, so this fork was created to allow it to continue to get some love.
 
 # Overview
 CERT Tapioca is a utility for testing mobile or any other application using MITM techniques.  CERT Tapioca development was sponsored by the United States Army Armament Research, Development and Engineering Center (ARDEC) as well as the United States Department of Homeland Security (DHS).  Installation requirements:

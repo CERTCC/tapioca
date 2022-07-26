@@ -653,6 +653,18 @@ while [ -z "$mitmproxy_ok" ]; do
       mitmproxy_ok=1
       if [ -n "$pyqt5" ]; then
         QT_SELECT=qt5 sudo -E $mypip install PyQt5
+	if [ $? -ne 0 ]; then
+    # At some point in 2022, attempting to install PyQt5 with pip will eat up
+    # all available RAM until it dies. Why? Nobody knows.
+	  echo "Problem installing PyQt5 with $mypip. Retrying with PyQt-builder..."
+	  sudo $mypip install PyQt-builder PyQt5-sip
+	  pushd ~/in
+	  curl -OL https://files.pythonhosted.org/packages/e1/57/2023316578646e1adab903caab714708422f83a57f97eb34a5d13510f4e1/PyQt5-5.15.7.tar.gz
+	  tar xavf PyQt5-5.15.7.tar.gz
+	  cd PyQt5-5.15.7
+	  echo yes | sudo sip-install
+	  popd
+        fi
       fi
   fi
 done

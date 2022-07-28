@@ -644,7 +644,15 @@ while [ -z "$mitmproxy_ok" ]; do
       fi
   else
       # system-wide installed python
-      sudo $mypip install colorama mitmproxy pyshark GitPython
+      sudo $mypip install colorama pyshark GitPython
+
+      if [ "$arch" == "aarch64" ]; then
+        # mitmproxy crashes on Python 3.7 on aarch64. Nobody knows why.
+        # Just use system-wide python3 to get mitmproxy here.
+        sudo pip3 install mitmproxy
+      else
+        sudo $mypip install mitmproxy
+      fi
 
       # pip is a moving target and everything is terrible
       # https://techoverflow.net/2022/04/07/how-to-fix-jupyter-lab-importerror-cannot-import-name-soft_unicode-from-markupsafe/

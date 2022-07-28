@@ -292,7 +292,7 @@ elif [ -n "$apt" ]; then
     python3-pip wireshark tshark\
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
-    libsnappy-dev libgcrypt-dev ifupdown xclip
+    libsnappy-dev libgcrypt-dev ifupdown xclip psmisc
     if [ $? -ne 0 ]; then
       echo "Error installing dependency packages. Please check errors and try again."
       exit 1

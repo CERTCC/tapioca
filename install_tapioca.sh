@@ -649,7 +649,7 @@ while [ -z "$mitmproxy_ok" ]; do
       if [ "$arch" == "aarch64" ]; then
         # mitmproxy crashes on Python 3.7 on aarch64. Nobody knows why.
         # Just use system-wide python3 to get mitmproxy here.
-        sudo pip3 install mitmproxy
+        sudo pip3 install mitmproxy pyshark
       else
         sudo $mypip install mitmproxy
       fi

@@ -650,6 +650,10 @@ while [ -z "$mitmproxy_ok" ]; do
         # mitmproxy crashes on Python 3.7 on aarch64. Nobody knows why.
         # Just use system-wide python3 to get mitmproxy here.
         sudo pip3 install mitmproxy pyshark
+
+        # We also will make a fake "python3.7" link to the system-wide python3
+        # Again, YOLO
+        sudo ln -s $(which python3) /usr/local/bin/python3.7
       else
         sudo $mypip install mitmproxy
       fi

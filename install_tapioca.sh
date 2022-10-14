@@ -788,7 +788,7 @@ if [ -f ~/.xinitrc ]; then
 fi
 echo "sudo service dnsmasq restart" > ~/.xinitrc
 echo "sudo service dhcpd restart" >> ~/.xinitrc
-echo "exec /usr/bin/xfce4-session" >> ~/.xinitrc
+echo 'DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus exec /usr/bin/xfce4-session' >> ~/.xinitrc
 
 startx=$(grep startx ~/.bash_profile)
 if [ -z "$startx" ]; then

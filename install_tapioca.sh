@@ -361,11 +361,19 @@ fi
 # Make xfce the default for tapioca user
 if sudo [ -f /var/lib/AccountsService/users/tapioca ]; then
     # There may be a default session
-    sudo grep XSession /var/lib/AccountsService/users/tapioca > /dev/null
+    sudo egrep "^Session=" /var/lib/AccountsService/users/tapioca > /dev/null
+    if [ $? -eq 0 ]; then
+        # Match found.  Replace existing Session line
+        sudo sed -i.bak -e 's/Session=.*/Session=xfce/' /var/lib/AccountsService/users/tapioca
+        sessionset=1
+    fi   
+    sudo egrep "^XSession=" /var/lib/AccountsService/users/tapioca > /dev/null
     if [ $? -eq 0 ]; then
         # Match found.  Replace existing XSession line
         sudo sed -i.bak -e 's/XSession=.*/XSession=xfce/' /var/lib/AccountsService/users/tapioca
-    else
+        sessionset=1
+    fi
+    if [ -z "$sessionset"]; then
         # Append a new XSession line
         sudo bash -c "echo XSession=xfce >> /var/lib/AccountsService/users/tapioca"
     fi

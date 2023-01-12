@@ -107,6 +107,7 @@ sudo_configured=$(sudo grep "tapioca ALL=NOPASSWD: ALL" /etc/sudoers)
 if [ -z "$sudo_configured" ]; then
     # Don't require password for tapioca sudo
     echo "$user_id isn't properly configured in /etc/sudoers.  Correcting."
+    echo "NOTE: You may need to reboot for this change to activate!"
     echo ""
     sudo sh -c "echo 'tapioca ALL=NOPASSWD: ALL' >> /etc/sudoers"
 fi
@@ -397,6 +398,7 @@ if [ -f /etc/gdm3/custom.conf ]; then
     sudo sed -i.bak -e 's/AutomaticLogin=.*/AutomaticLogin=tapioca/' /etc/gdm3/custom.conf
     sudo sed -i.bak -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
     sudo sed -i.bak -e 's/#  AutomaticLogin = user1/AutomaticLogin = tapioca/' /etc/gdm3/custom.conf
+    sudo sed -i.bak -e 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm3/custom.conf
 fi
 
 # Automatically log in as tapioca user with lightdm

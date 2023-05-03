@@ -831,6 +831,10 @@ if [ -n "$apt" ]; then
         sudo netplan apply
         sudo service network-manager restart
     fi
+
+    # Ubuntu 23.04 seems to need adjustments to make dnsmasq work
+    sudo sed -i.bak -e "s/#IGNORE_RESOLVCONF=yes/IGNORE_RESOLVCONF=yes' /etc/default/dnsmasq
+    sudo sed -i.bak -e "s/#DNSMASQ_EXCEPT="lo"/DNSMASQ_EXCEPT="lo"' /etc/default/dnsmasq
 fi
 
 if [ -e "/etc/systemd/resolved.conf" ]; then

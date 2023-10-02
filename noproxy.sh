@@ -35,9 +35,7 @@ mitmwin=`xdotool search --onlyvisible --name "mitmproxy" | head -n1 2>/dev/null`
 if [ -n "$mitmwin" ]; then
     # Cleanly exit mitmproxy to flush buffers
     echo "*** Sending quit keys to window $mitmwin ***"
-    xdotool key --window $mitmwin q
-    xdotool key --window $mitmwin q
-    xdotool key --window $mitmwin y
+    xdotool search --onlyvisible --name "mitmproxy" windowactivate; xdotool key q; xdotool key q; xdotool key y
 fi
 
 # Give time to clean up

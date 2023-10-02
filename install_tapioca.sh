@@ -107,6 +107,7 @@ sudo_configured=$(sudo grep "tapioca ALL=NOPASSWD: ALL" /etc/sudoers)
 if [ -z "$sudo_configured" ]; then
     # Don't require password for tapioca sudo
     echo "$user_id isn't properly configured in /etc/sudoers.  Correcting."
+    echo "NOTE: You may need to reboot for this change to activate!"
     echo ""
     sudo sh -c "echo 'tapioca ALL=NOPASSWD: ALL' >> /etc/sudoers"
 fi
@@ -292,7 +293,7 @@ elif [ -n "$apt" ]; then
     python3-pip wireshark tshark\
     network-manager ethtool hostapd gnome-icon-theme \
     libwiretap-dev zlib1g-dev libcurl4-gnutls-dev curl conntrack iptables-persistent\
-    libsnappy-dev libgcrypt-dev ifupdown xclip
+    libsnappy-dev libgcrypt-dev ifupdown xclip psmisc
     if [ $? -ne 0 ]; then
       echo "Error installing dependency packages. Please check errors and try again."
       exit 1
@@ -360,11 +361,19 @@ fi
 # Make xfce the default for tapioca user
 if sudo [ -f /var/lib/AccountsService/users/tapioca ]; then
     # There may be a default session
-    sudo grep XSession /var/lib/AccountsService/users/tapioca > /dev/null
+    sudo egrep "^Session=" /var/lib/AccountsService/users/tapioca > /dev/null
+    if [ $? -eq 0 ]; then
+        # Match found.  Replace existing Session line
+        sudo sed -i.bak -e 's/Session=.*/Session=xfce/' /var/lib/AccountsService/users/tapioca
+        sessionset=1
+    fi   
+    sudo egrep "^XSession=" /var/lib/AccountsService/users/tapioca > /dev/null
     if [ $? -eq 0 ]; then
         # Match found.  Replace existing XSession line
         sudo sed -i.bak -e 's/XSession=.*/XSession=xfce/' /var/lib/AccountsService/users/tapioca
-    else
+        sessionset=1
+    fi
+    if [ -z "$sessionset"]; then
         # Append a new XSession line
         sudo bash -c "echo XSession=xfce >> /var/lib/AccountsService/users/tapioca"
     fi
@@ -397,6 +406,7 @@ if [ -f /etc/gdm3/custom.conf ]; then
     sudo sed -i.bak -e 's/AutomaticLogin=.*/AutomaticLogin=tapioca/' /etc/gdm3/custom.conf
     sudo sed -i.bak -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
     sudo sed -i.bak -e 's/#  AutomaticLogin = user1/AutomaticLogin = tapioca/' /etc/gdm3/custom.conf
+    sudo sed -i.bak -e 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm3/custom.conf
 fi
 
 # Automatically log in as tapioca user with lightdm
@@ -644,7 +654,19 @@ while [ -z "$mitmproxy_ok" ]; do
       fi
   else
       # system-wide installed python
-      sudo $mypip install colorama mitmproxy pyshark GitPython
+      sudo $mypip install colorama pyshark GitPython
+
+      if [ "$arch" == "aarch64" ]; then
+        # mitmproxy crashes on Python 3.7 on aarch64. Nobody knows why.
+        # Just use system-wide python3 to get mitmproxy here.
+        sudo pip3 install mitmproxy pyshark
+
+        # We also will make a fake "python3.7" link to the system-wide python3
+        # Again, YOLO
+        sudo ln -s $(which python3) /usr/local/bin/python3.7
+      else
+        sudo $mypip install mitmproxy
+      fi
 
       # pip is a moving target and everything is terrible
       # https://techoverflow.net/2022/04/07/how-to-fix-jupyter-lab-importerror-cannot-import-name-soft_unicode-from-markupsafe/
@@ -653,6 +675,18 @@ while [ -z "$mitmproxy_ok" ]; do
       mitmproxy_ok=1
       if [ -n "$pyqt5" ]; then
         QT_SELECT=qt5 sudo -E $mypip install PyQt5
+	if [ $? -ne 0 ]; then
+    # At some point in 2022, attempting to install PyQt5 with pip will eat up
+    # all available RAM until it dies. Why? Nobody knows.
+	  echo "Problem installing PyQt5 with $mypip. Retrying with PyQt-builder..."
+	  sudo $mypip install PyQt-builder PyQt5-sip
+	  pushd ~/in
+	  curl -OL https://files.pythonhosted.org/packages/e1/57/2023316578646e1adab903caab714708422f83a57f97eb34a5d13510f4e1/PyQt5-5.15.7.tar.gz
+	  tar xavf PyQt5-5.15.7.tar.gz
+	  cd PyQt5-5.15.7
+	  echo yes | sudo sip-install
+	  popd
+        fi
       fi
   fi
 done
@@ -764,7 +798,7 @@ if [ -f ~/.xinitrc ]; then
 fi
 echo "sudo service dnsmasq restart" > ~/.xinitrc
 echo "sudo service dhcpd restart" >> ~/.xinitrc
-echo "exec /usr/bin/xfce4-session" >> ~/.xinitrc
+echo 'DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus exec /usr/bin/xfce4-session' >> ~/.xinitrc
 
 startx=$(grep startx ~/.bash_profile)
 if [ -z "$startx" ]; then
@@ -797,6 +831,10 @@ if [ -n "$apt" ]; then
         sudo netplan apply
         sudo service network-manager restart
     fi
+
+    # Ubuntu 23.04 seems to need adjustments to make dnsmasq work
+    sudo sed -i.bak -e 's/#IGNORE_RESOLVCONF=yes/IGNORE_RESOLVCONF=yes' /etc/default/dnsmasq
+    sudo sed -i.bak -e 's/#DNSMASQ_EXCEPT="lo"/DNSMASQ_EXCEPT="lo"' /etc/default/dnsmasq
 fi
 
 if [ -e "/etc/systemd/resolved.conf" ]; then

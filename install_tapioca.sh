@@ -379,7 +379,7 @@ if sudo [ -f /var/lib/AccountsService/users/tapioca ]; then
         sudo sed -i.bak -e 's/XSession=.*/XSession=xfce/' /var/lib/AccountsService/users/tapioca
         sessionset=1
     fi
-    if [ -z "$sessionset"]; then
+    if [ -z "$sessionset" ]; then
         # Append a new XSession line
         sudo bash -c "echo XSession=xfce >> /var/lib/AccountsService/users/tapioca"
     fi

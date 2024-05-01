@@ -271,8 +271,14 @@ elif [ -n "$apt" ]; then
     sudo apt-get -y update
     if DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium; then
       echo Debian-like OS detected
-      # Fix Chromium icon
-      sed -i.bak -e 's/^Icon=chromium-browser/Icon=chromium/' config/xfce4/panel/launcher-11/14849268213.desktop
+      sudo snap list | grep chromium > /dev/null
+      if [ $? -eq 0 ]; then
+        # No need to muck with icon on Ubuntu 24.04
+        echo "Chromium was installed via snap on modern OS..."
+      else
+        # Fix Chromium icon
+        sed -i.bak -e 's/^Icon=chromium-browser/Icon=chromium/' config/xfce4/panel/launcher-11/14849268213.desktop
+      fi
     else
       DEBIAN_FRONTEND=noninteractive sudo -E snap install chromium
       if [ $? -ne 0 ]; then

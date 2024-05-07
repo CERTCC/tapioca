@@ -48,7 +48,7 @@ Before installing Tapioca, decide how you will be providing network connectivity
 CERT Tapioca requires root privileges for several capabilities that it uses.  For this reason, the Tapioca installer configures a system to not prompt the user for sudo privileges.  Any user with access to the CERT Tapioca system will have root privileges.  The "Full HTTPS inspection" certificate/key combination is static across all CERT Tapioca installations.  For this reason, any system or device that has the full HTTPS inspection mitmproxy root CA certificate installed should not be used on untrusted networks.  The same capability that allows you to use Tapioca to fully inspect HTTPS traffic can allow anyone else with a CERT Tapioca installation to perform the same inspection.
 
 # Installation
-1. Obtain the Tapioca code.  This can be accomplished by performing a `git clone` of the [Tapioca repository](https://github.com/CERTCC/tapioca.git), or by downloading and extracting a [zip file of the repository](https://github.com/CERTCC/tapioca/archive/master.zip).
+1. Obtain the Tapioca code.  This can be accomplished by performing a `git clone` of the [Tapioca repository](https://github.com/vu-ls/tapioca.git), or by downloading and extracting a [zip file of the repository](https://github.com/vu-ls/tapioca/archive/master.zip).
 1. Ensure that the Tapioca code lives in the `/home/tapioca/tapioca` directory. If you have obtained Tapioca via a zip file, this may require that you rename the `tapioca-master` directory to `tapioca`.
 1. Run the installer:
 `[tapioca@localhost tapioca]$ ./install_tapioca.sh`

@@ -667,6 +667,28 @@ while [ -z "$mitmproxy_ok" ]; do
         # Just use system-wide python3 to get mitmproxy here.
         sudo pip3 install mitmproxy pyshark
 
+        if [ $? -ne 0 ]; then
+          echo "We're going to have to do a split install of Python code... :-/"
+          $mypip install mitmproxy pyshark
+          # pip is a moving target and everything is terrible
+          # https://techoverflow.net/2022/04/07/how-to-fix-jupyter-lab-importerror-cannot-import-name-soft_unicode-from-markupsafe/
+          $mypip install markupsafe==2.0.1
+          sudo apt install -y python3-pyqt5
+          if [ $? -ne 0 ]; then
+            echo "Cannot figure out how to get PyQt5 on this platform. You're on your own here..."
+          else
+            echo "We've gotten PyQt5 via APT. No need to manually install it"
+            unset pyqt5
+            echo "Overriding shebang in python code that uses PyQt5 to use system-wide python3"
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' tapioca.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' noproxy.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' proxy.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' ssltest.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' tcpdump.py
+          fi
+
+        fi
+
         # We also will make a fake "python3.7" link to the system-wide python3
         # Again, YOLO
         sudo ln -s $(which python3) /usr/local/bin/python3.7

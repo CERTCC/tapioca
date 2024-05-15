@@ -271,8 +271,14 @@ elif [ -n "$apt" ]; then
     sudo apt-get -y update
     if DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install chromium; then
       echo Debian-like OS detected
-      # Fix Chromium icon
-      sed -i.bak -e 's/^Icon=chromium-browser/Icon=chromium/' config/xfce4/panel/launcher-11/14849268213.desktop
+      sudo snap list | grep chromium > /dev/null
+      if [ $? -eq 0 ]; then
+        # No need to muck with icon on Ubuntu 24.04
+        echo "Chromium was installed via snap on modern OS..."
+      else
+        # Fix Chromium icon
+        sed -i.bak -e 's/^Icon=chromium-browser/Icon=chromium/' config/xfce4/panel/launcher-11/14849268213.desktop
+      fi
     else
       DEBIAN_FRONTEND=noninteractive sudo -E snap install chromium
       if [ $? -ne 0 ]; then
@@ -373,7 +379,7 @@ if sudo [ -f /var/lib/AccountsService/users/tapioca ]; then
         sudo sed -i.bak -e 's/XSession=.*/XSession=xfce/' /var/lib/AccountsService/users/tapioca
         sessionset=1
     fi
-    if [ -z "$sessionset"]; then
+    if [ -z "$sessionset" ]; then
         # Append a new XSession line
         sudo bash -c "echo XSession=xfce >> /var/lib/AccountsService/users/tapioca"
     fi
@@ -661,6 +667,28 @@ while [ -z "$mitmproxy_ok" ]; do
         # Just use system-wide python3 to get mitmproxy here.
         sudo pip3 install mitmproxy pyshark
 
+        if [ $? -ne 0 ]; then
+          echo "We're going to have to do a split install of Python code... :-/"
+          $mypip install mitmproxy pyshark
+          # pip is a moving target and everything is terrible
+          # https://techoverflow.net/2022/04/07/how-to-fix-jupyter-lab-importerror-cannot-import-name-soft_unicode-from-markupsafe/
+          $mypip install markupsafe==2.0.1
+          sudo apt install -y python3-pyqt5
+          if [ $? -ne 0 ]; then
+            echo "Cannot figure out how to get PyQt5 on this platform. You're on your own here..."
+          else
+            echo "We've gotten PyQt5 via APT. No need to manually install it"
+            unset pyqt5
+            echo "Overriding shebang in python code that uses PyQt5 to use system-wide python3"
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' tapioca.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' noproxy.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' proxy.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' ssltest.py
+            sed -i.bak -e 's/#!\/usr\/bin\/env python3.7/#!\/usr\/bin\/env python3/' tcpdump.py
+          fi
+
+        fi
+
         # We also will make a fake "python3.7" link to the system-wide python3
         # Again, YOLO
         sudo ln -s $(which python3) /usr/local/bin/python3.7
@@ -837,8 +865,8 @@ if [ -n "$apt" ]; then
     fi
 
     # Ubuntu 23.04 seems to need adjustments to make dnsmasq work
-    sudo sed -i.bak -e 's/#IGNORE_RESOLVCONF=yes/IGNORE_RESOLVCONF=yes' /etc/default/dnsmasq
-    sudo sed -i.bak -e 's/#DNSMASQ_EXCEPT="lo"/DNSMASQ_EXCEPT="lo"' /etc/default/dnsmasq
+    sudo sed -i.bak -e 's/#IGNORE_RESOLVCONF=yes/IGNORE_RESOLVCONF=yes/' /etc/default/dnsmasq
+    sudo sed -i.bak -e 's/#DNSMASQ_EXCEPT="lo"/DNSMASQ_EXCEPT="lo"/' /etc/default/dnsmasq
 fi
 
 if [ -e "/etc/systemd/resolved.conf" ]; then
